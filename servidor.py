@@ -1,8 +1,8 @@
 import socket
 
 # Configurações do servidor
-HOST = '127.0.0.1'  # Endereço IP do servidor
-PORT = 65432        # Porta para escutar conexões
+HOST = '0.0.0.0'  # Permite conexões de qualquer endereço IP
+PORT = 65432      # Porta para escutar conexões
 
 # Criação do socket TCP
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
