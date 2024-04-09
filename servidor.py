@@ -3,6 +3,18 @@ from flask import Flask, request, jsonify
 import json
 import requests
 
+def enviar_para_api(data_udp):
+    url = 'http://127.0.0.1:5000/publish'
+    payload = {'message': data_udp.decode()}  # Supondo que data_udp é uma sequência de bytes
+    json_payload = json.dumps(payload)  # Convertendo para JSON
+    headers = {'Content-Type': 'application/json'}
+    print(json_payload)
+    response = requests.post(url, data=json_payload, headers=headers)
+    
+    if response.status_code == 200:
+        print("Dados UDP enviados com sucesso para a API.")
+    else:
+        print("Erro ao enviar os dados UDP para a API:", response.status_code)
 
 # Configurações do servidor
 SERVER_IP = '192.168.1.105'  # Endereço IP do servidor, no caso, broker
@@ -38,22 +50,9 @@ def main():
         data_udp, addr_udp = server_udp_socket.recvfrom(1024)
         print('Conectado por TCP:', addr_udp)
         print('Mensagem recebida do cliente UDP:', data_udp.decode())
-
-        # Salva a mensagem UDP em um arquivo JSON
-        mensagem_udp = data_udp.decode()
-        with open('mensagem_udp.json', 'w') as file:
-            json.dump({'mensagem_udp': mensagem_udp}, file)
             
-        # Carregar os dados do arquivo JSON
-        with open('mensagem_udp.json', 'r') as file:
-            data = json.load(file)
-
-        # URL da API para enviar os dados
-        url = 'http://127.0.0.1:5000/publish'
-
-        # Fazer uma solicitação POST para a API com os dados do arquivo JSON
-        response = requests.post(url, json=data) 
-        print(response)   "
-            
+        # Envia os dados UDP para a API
+        enviar_para_api(data_udp)
+        
 if __name__ == '__main__':
     main()
