@@ -27,6 +27,7 @@ def main():
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as client_udp_socket: 
                 # Converte o número para string antes de enviar   
                 temperatura = generate_fake_temperature()
+                print(temperatura)
                 # # Envia a temperatura para o servidor UDP 
                 temperatura_str = str(temperatura)
                 # # Envia uma mensagem para o servidor UDP
