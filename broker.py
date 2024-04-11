@@ -7,7 +7,7 @@ app = Flask(__name__)
 messages = []
 lock = threading.Lock()
 
-@app.route('/publish', methods=['POST'])
+@app.route('/publicar', methods=['POST'])
 def publish_message():
     data = request.get_json()
     if 'message' in data:
@@ -18,7 +18,7 @@ def publish_message():
     else:
         return jsonify({'status': 'error', 'message': 'Parâmetro "message" ausente'}), 400
 
-@app.route('/consume', methods=['GET'])
+@app.route('/consumir', methods=['GET'])
 def consume_message():
     with lock:
         if messages:
@@ -29,7 +29,7 @@ def consume_message():
 
 def tcp_server():
     # Configurações do servidor
-    SERVER_IP = '192.168.1.105'  # Endereço IP do servidor, no caso, broker
+    SERVER_IP = '0.0.0.0'  # Endereço IP do servidor, no caso, broker
     TCP_PORT = 65432             # Porta TCP do servidor
 
     # Criação do socket TCP
@@ -53,7 +53,7 @@ def tcp_server():
 
 def udp_server():
     # Configurações do servidor
-    SERVER_IP = '192.168.1.105'  # Endereço IP do servidor, no caso, broker
+    SERVER_IP = '0.0.0.0'  # Endereço IP do servidor, no caso, broker
     UDP_PORT = 65433             # Porta UDP do servidor para resposta
 
     # Criação do socket UDP
@@ -74,8 +74,8 @@ def udp_server():
             enviar_para_api(data_udp)
 
 def enviar_para_api(data_udp):
-    url_publish = 'http://127.0.0.1:5000/publish'
-    url_consume = 'http://127.0.0.1:5000/consume'  # Rota para consumir a API
+    url_publish = 'http://127.0.0.1:8081/publicar'
+    url_consume = 'http://127.0.0.1:8081/consumir'  # Rota para consumir a API
 
     # Preparar os dados para publicar na API
     payload = {'message': data_udp.decode()}  # Supondo que data_udp é uma sequência de bytes
@@ -106,14 +106,18 @@ def enviar_para_api(data_udp):
 
 def main():
     
-    # Inicia os servidores TCP e UDP em threads separadas
-    tcp_thread = threading.Thread(target=tcp_server)
-    udp_thread = threading.Thread(target=udp_server)
-    tcp_thread.start()
-    udp_thread.start()
-    
-    # Inicia a aplicação Flask
-    app.run(debug=True)
+    try:
+        # Inicia os servidores TCP e UDP em threads separadas
+        tcp_thread = threading.Thread(target=tcp_server)
+        udp_thread = threading.Thread(target=udp_server)
+        tcp_thread.start()
+        udp_thread.start()
+        
+        # Inicia a aplicação Flask
+        app.run(port=8081, debug=True)
+        
+    except Exception as e:
+        print('Erro:', e)
     
 if __name__ == '__main__':
     main()
