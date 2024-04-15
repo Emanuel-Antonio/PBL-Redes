@@ -33,33 +33,35 @@ def main():
         try:
             
             # Criação do socket TCP
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_tcp_socket:
-                # Conecta ao servidor TCP
-                client_tcp_socket.connect((SERVER_IP, TCP_PORT))
-                # Envia uma mensagem para o servidor TCP
-                client_tcp_socket.sendall(b'Ola, servidor TCP')
-                # Recebe a resposta do servidor TCP
-                tcp_response = client_tcp_socket.recv(1024)
-                print('Resposta do servidor (TCP):', tcp_response.decode())
-                if(tcp_response.decode() == "desligar" or tcp_response.decode() == "ligar"):
-                    MENSAGE = tcp_response.decode()
+            client_tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            # Conecta ao servidor TCP
+            client_tcp_socket.connect((SERVER_IP, TCP_PORT))
+            # Envia uma mensagem para o servidor TCP
+            client_tcp_socket.sendall(b'Ola, servidor TCP')
+            # Recebe a resposta do servidor TCP
+            tcp_response = client_tcp_socket.recv(1024)
+            print('Resposta do servidor (TCP):', tcp_response.decode())
+            if(tcp_response.decode() == "desligar" or tcp_response.decode() == "ligar"):
+                MENSAGE = tcp_response.decode()
             if MENSAGE == "desligar":
                 pass
             else:    
                 # Criação do socket UDP
-                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as client_udp_socket: 
-                    # Converte o número para string antes de enviar   
-                    temperatura = generate_fake_temperature()
-                    print(temperatura)
-                    # # Envia a temperatura para o servidor UDP 
-                    temperatura_str = str(temperatura)
-                    # # Envia uma mensagem para o servidor UDP
-                    client_udp_socket.sendto(temperatura_str.encode(), (SERVER_IP, UDP_PORT))
+                client_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+                # Converte o número para string antes de enviar   
+                temperatura = generate_fake_temperature()
+                print(temperatura)
+                # # Envia a temperatura para o servidor UDP 
+                temperatura_str = str(temperatura)
+                # # Envia uma mensagem para o servidor UDP
+                client_udp_socket.sendto(temperatura_str.encode(), (SERVER_IP, UDP_PORT))
                     
             time.sleep(1)
 
         except Exception as e:
-            print('Erro: Broker desconectado')
+            print('Erro: Broker desconectado', e)
+            client_udp_socket.close()
+            client_tcp_socket.close()
             pass
         
 if __name__ == '__main__':

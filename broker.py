@@ -64,6 +64,9 @@ def tcp_server():
                     if i == 20:
                         message_to_send = "ligar"
                         conn_tcp.sendall(message_to_send.encode())
+                    else:
+                        message_to_send = "ligar"
+                        conn_tcp.sendall(message_to_send.encode())
                         
         except Exception as e:
             pass
