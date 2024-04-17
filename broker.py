@@ -32,8 +32,8 @@ def consume_message():
 
 def tcp_server():
     # Configurações do servidor
-    SERVER_IP = '0.0.0.0'  # Endereço IP do servidor, no caso, broker
-    TCP_PORT = 65432             # Porta TCP do servidor
+    SERVER_IP = '0.0.0.0'     # Endereço IP do servidor, no caso, broker
+    TCP_PORT = 7777           # Porta TCP do servidor
 
     # Criação do socket TCP
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_tcp_socket:
@@ -56,7 +56,7 @@ def tcp_server():
                     data_tcp = conn_tcp.recv(1024)
                     print('Mensagem recebida do cliente TCP:', data_tcp.decode())
                     
-                    i += 1
+                    '''i += 1
                     # Envia uma mensagem de volta para o cliente
                     if i == 15:
                         message_to_send = "desligar"
@@ -66,7 +66,7 @@ def tcp_server():
                         conn_tcp.sendall(message_to_send.encode())
                     else:
                         message_to_send = "ligar"
-                        conn_tcp.sendall(message_to_send.encode())
+                        conn_tcp.sendall(message_to_send.encode())'''
                         
         except Exception as e:
             pass
