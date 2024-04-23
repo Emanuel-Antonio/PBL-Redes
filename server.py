@@ -3,6 +3,8 @@ import socket
 import json
 import requests
 from flask import Flask, request, jsonify
+import datetime
+import time
 
 app = Flask(__name__)
 
@@ -11,14 +13,23 @@ dispositivosConectados = []
 # Lista de mensagens (simulando uma fila de mensagens)
 messages = []
 lock = threading.Lock()
+msg = 'Ligar'
+num = 1
+
 
 # Lista de usuários
 dispositivos = []
+
+requisicoes = []
 
 # Rota para listar todos os usuários
 @app.route('/dispositivos', methods=['GET'])
 def get_usuarios():
     return jsonify(dispositivos)
+
+@app.route('/requisicoes', methods=['GET'])
+def get_requisicoes():
+    return jsonify(requisicoes)
 
 # Rota para obter um usuário por ID
 @app.route('/dispositivos/<int:dispositivo_id>', methods=['GET'])
@@ -35,6 +46,14 @@ def criar_usuario():
     novo_dispositivo['id'] = len(dispositivos) + 1
     dispositivos.append(novo_dispositivo)
     return jsonify(novo_dispositivo), 201
+
+# Rota para criar um novo usuário
+@app.route('/requisicoes', methods=['POST'])
+def criar_requisicao():
+    nova_requisicao = request.json
+    nova_requisicao['id'] = len(requisicoes) + 1
+    requisicoes.append(nova_requisicao)
+    return jsonify(nova_requisicao), 201
 
 # Rota para atualizar um usuário existente
 @app.route('/dispositivo/<int:dispositivo_id>', methods=['PUT'])
@@ -53,12 +72,34 @@ def excluir_usuario(dispositivo_id):
     dispositivos = [dispositivo for dispositivo in dispositivos if dispositivo['id'] != dispositivo_id]
     return jsonify({'message': 'Dispositivo excluído com sucesso'})
 
+# Rota para excluir um usuário
+@app.route('/requisicoes/<int:requisicao_id>', methods=['DELETE'])
+def excluir_requisicao(requisicao_id):
+    global requisicoes
+    requisicoes = [requisicao for requisicao in requisicoes if requisicao['id'] != requisicao_id]
+    return jsonify({'message': 'Dispositivo excluído com sucesso'})
+
+def pegar_horario_atual_json():
+    agora = datetime.datetime.now()
+    hora = agora.hour
+    minutos = agora.minute
+    segundos = agora.second
+    
+    # Criando um dicionário com os valores
+    horario_dict = {
+        "hora": hora,
+        "minutos": minutos,
+        "segundos": segundos
+    }
+    
+    return horario_dict
+
 def enviar_para_api(data_udp):
     url_publish = 'http://127.0.0.1:8081/dispositivos'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'temperatura': data_udp.decode()}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'temperatura': data_udp.decode(), 'data': pegar_horario_atual_json()}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -80,7 +121,7 @@ def atualizar_dado_api(dado_udp, id):
 
     try:
         # Preparar os dados para atualizar na API
-        payload = {'temperatura': dado_udp.decode()}
+        payload = {'temperatura': dado_udp.decode(), 'data': pegar_horario_atual_json()}
         json_payload = json.dumps(payload)
         headers = {'Content-Type': 'application/json'}
 
@@ -113,30 +154,59 @@ def remover_dispositivo(dado_id):
     except Exception as e:
         print('Erro ao enviar/receber dados para/de API:', e)
 
-
-def verificaRequisição():
-    url_consume = 'http://127.0.0.1:8081/consumir'  # Rota para consumir a API
+def remover_requisicao(dado_id):
+    url_delete = 'http://127.0.0.1:8081/requisicoes/{}'.format(dado_id)
 
     try:
-        # Consumir a API para obter a mensagem recém-publicada
-        response_consume = requests.get(url_consume)
+        # Enviar requisição DELETE para remover o dado da API
+        response_delete = requests.delete(url_delete)
 
-        # Verificar se a mensagem foi consumida com sucesso
-        if response_consume.status_code == 200:
-            consumed_message = response_consume.json()
-
-            print("Mensagem consumida da API:", consumed_message)
+        # Verificar se a remoção foi bem-sucedida
+        if response_delete.status_code == 200:
+            print("Dado removido com sucesso da API.")
         else:
-            print("Erro ao consumir a API:", response_consume.status_code)
+            print("Erro ao remover o dado da API:", response_delete.status_code)
+            return
     except Exception as e:
         print('Erro ao enviar/receber dados para/de API:', e)
+
+def requisicao():
+    global msg
+    global num
+    url_consume = 'http://127.0.0.1:8081/requisicoes'  # Rota para consumir a API
+    while True:
+        try:
+            # Consumir a API para obter a mensagem recém-publicada
+            response_consume = requests.get(url_consume)
+
+            # Verificar se a mensagem foi consumida com sucesso
+            if response_consume.status_code == 200:
+                consumed_message = response_consume.json()
+            else:
+                print("Erro ao consumir a API:", response_consume.status_code)
+            for keys in consumed_message:
+                if keys.get('temperatura') == 'Desligar':
+                    msg = 'Desligar'
+                    num = keys.get('id')
+                    print(num, msg)
+                else:
+                    msg = 'Ligar'
+                    num = keys.get('id')
+                print("clients {}", clients)
+                clients[num - 1].send(msg.encode())
+                remover_requisicao(keys.get('id'))
+                
+        except Exception as e:
+            print('Erro ao enviar/receber dados para/de API:', e)
 
 def main():
 
     try:
         # Inicia os servidores TCP e UDP em threads separadas
         tcp_thread = threading.Thread(target=tcp_udp_server)
+        requisicao_thread = threading.Thread(target=requisicao)
         tcp_thread.start()
+        requisicao_thread.start()
 
         # Inicia a aplicação Flask
         app.run(port=8081, debug=True)
@@ -158,50 +228,51 @@ def tcp_udp_server():
         client, addr = server.accept()
         clients.append(client)
         
-        thread = threading.Thread(target=selecaoMensagem, args=[client])
         thread2 = threading.Thread(target=receberTcp, args=[client])
         thread3 = threading.Thread(target=receberUdp, args=[server_udp])
-        thread.start()
         thread2.start()
         thread3.start()
                 
 def receberUdp(server_udp):
     global dispositivosConectados
     while True:
-        # Recebe dados do cliente UDP
-        data_udp, addr_udp = server_udp.recvfrom(1024)
-        print('Conectado por UDP:', addr_udp)
-        print('Mensagem recebida do cliente UDP:', data_udp.decode())
-        if(data_udp.decode() != "Desligar"):
-            if(addr_udp not in dispositivosConectados):
-                dispositivosConectados.append(addr_udp)
-                enviar_para_api(data_udp)
+        try:
+            # Recebe dados do cliente UDP
+            data_udp, addr_udp = server_udp.recvfrom(1024)
+            print('Conectado por UDP:', addr_udp)
+            print('Mensagem recebida do cliente UDP:', data_udp.decode())
+            if(data_udp.decode() != "Desligar"):
+                if(addr_udp not in dispositivosConectados):
+                    dispositivosConectados.append(addr_udp)
+                    enviar_para_api(data_udp)
+                else:
+                    atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp) + 1)
             else:
                 atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp) + 1)
-        else:
-            remover_dispositivo(dispositivosConectados.index(addr_udp) + 1)
-            dispositivosConectados.remove(addr_udp)
+                remover_dispositivo(dispositivosConectados.index(addr_udp) + 1)
+                dispositivosConectados.remove(addr_udp)
+        except Exception as e:
+            print('Item já removido')
             
 def receberTcp(client):
     data_tcp = client.recv(1024)
     print('Mensagem recebida do cliente TCP:', data_tcp.decode())
                     
 def selecaoMensagem(client):
+    global num
+    global msg
     while True:
         try:
-            num = int(input('\ncliente 1\ncliente 2\n'))
-            msg = b'Desligar'
+            print("verifica dado enviado dispositivo {} {}",num, msg)
             transmitir(msg, num)
         except:
-            removerCliente(client)
-            break
-
+            pass
+        
 def transmitir(msg, num):
     try:
         clients[num - 1].send(msg)
     except:
-        removerCliente(clients[num -1])
-
+        pass
 
 def removerCliente(client):
     clients.remove(client)

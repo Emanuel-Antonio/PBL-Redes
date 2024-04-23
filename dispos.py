@@ -61,7 +61,7 @@ def receberTcp(client):
 def enviarMensagem(client, username):
     while True:
         try:
-            msg = "Bom dia"
+            msg = "conectado"
             client.send(f'<{username}> {msg}'.encode())
         except:
             return
