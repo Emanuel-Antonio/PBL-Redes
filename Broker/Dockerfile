@@ -1,0 +1,15 @@
+#Use a imagem Python 3 como base
+FROM python:3.9-slim
+
+#Copie o arquivo requirements.txt para a imagem
+COPY requirements.txt .
+COPY broker.py .
+
+#Crie o diretório de trabalho na imagem
+WORKDIR /app
+
+#Instale as bibliotecas Python listadas no arquivo requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+#Comando para iniciar o aplicativo
+CMD ["python", "broker.py"]

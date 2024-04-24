@@ -5,7 +5,7 @@ import json
 import datetime
 
 def verificaDados():
-    url_consume = 'http://127.0.0.1:8088/dispositivos'  # Rota para consumir a API
+    url_consume = 'http://192.168.1.105:8088/dispositivos'  # Rota para consumir a API
 
     try:
         # Consumir a API para obter a mensagem recém-publicada
@@ -37,11 +37,11 @@ def pegar_horario_atual_json():
     return horario_dict
 
 def enviarRequisicao(num, comando):
-    url_publish = 'http://127.0.0.1:8088/requisicoes'
+    url_publish = 'http://192.168.1.105:8088/requisicoes'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'temperatura': comando, 'num': num}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'Dado': comando, 'Num': num}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -60,16 +60,22 @@ def enviarRequisicao(num, comando):
     
 def menu():
     while True:
-        num = int(input('num dispositivo\n'))
-        comando = int(input("digite\n1 - Ligar\n 2 - Desligar"))
-        if comando == 1:
+        opcao = int(input("digite\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados\n"))    
+        num = int(input('num dispositivo: '))
+        if opcao == 1:
             comando = 'Ligar'
-        elif comando == 2:
+            enviarRequisicao(num, comando)          
+        elif opcao == 2:
             comando = 'Desligar'
+            enviarRequisicao(num, comando)          
+        elif opcao == 3:
+            n = int(input("Digite o Brilho: "))
+            comando = str(n)
+            enviarRequisicao(num, comando)          
         else:
-            comando = str(comando)
-        enviarRequisicao(num, comando)          
-        verificaDados()
+            verificaDados()
+            n = input('Digite enter para mandar outra requisição!')
+        limpar_terminal()
     
 def limpar_terminal():
     # Verifica se o sistema operacional é Windows
@@ -80,9 +86,8 @@ def limpar_terminal():
         os.system('clear')
 
 def main():
-    while True:
-        menu_thread = threading.Thread(target=menu)
-        menu_thread.start()
+    menu_thread = threading.Thread(target=menu)
+    menu_thread.start()
             
 if __name__=="__main__":
     main()

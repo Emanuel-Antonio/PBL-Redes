@@ -95,11 +95,11 @@ def pegar_horario_atual_json():
     return horario_dict
 
 def enviar_para_api(data_udp):
-    url_publish = 'http://127.0.0.1:8088/dispositivos'
+    url_publish = 'http://192.168.1.105:8088/dispositivos'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'temperatura': data_udp.decode(), 'data': pegar_horario_atual_json()}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'Dado': data_udp.decode(), 'Data': pegar_horario_atual_json()}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -116,11 +116,11 @@ def enviar_para_api(data_udp):
         print('Erro ao enviar/receber dados para/de API:', e)
 
 def atualizar_dado_api(dado_udp, id):
-    url_update = 'http://127.0.0.1:8088/dispositivo/{}'.format(id)
+    url_update = 'http://192.168.1.105:8088/dispositivo/{}'.format(id)
 
     try:
         # Preparar os dados para atualizar na API
-        payload = {'temperatura': dado_udp.decode(), 'data': pegar_horario_atual_json()}
+        payload = {'Dado': dado_udp.decode(), 'Data': pegar_horario_atual_json()}
         json_payload = json.dumps(payload)
         headers = {'Content-Type': 'application/json'}
 
@@ -137,7 +137,7 @@ def atualizar_dado_api(dado_udp, id):
         print('Erro ao enviar/receber dados para/de API:', e)
         
 def remover_dispositivo(dado_id):
-    url_delete = 'http://127.0.0.1:8088/dispositivo/{}'.format(dado_id)
+    url_delete = 'http://192.168.1.105:8088/dispositivo/{}'.format(dado_id)
 
     try:
         # Enviar requisição DELETE para remover o dado da API
@@ -153,7 +153,7 @@ def remover_dispositivo(dado_id):
         print('Erro ao enviar/receber dados para/de API:', e)
 
 def remover_requisicao(dado_id):
-    url_delete = 'http://127.0.0.1:8088/requisicoes/{}'.format(dado_id)
+    url_delete = 'http://192.168.1.105:8088/requisicoes/{}'.format(dado_id)
 
     try:
         # Enviar requisição DELETE para remover o dado da API
@@ -171,7 +171,7 @@ def remover_requisicao(dado_id):
 def requisicao():
     global msg
     global num
-    url_consume = 'http://127.0.0.1:8088/requisicoes'  # Rota para consumir a API
+    url_consume = 'http://192.168.1.105:8088/requisicoes'  # Rota para consumir a API
     while True:
         try:
             # Consumir a API para obter a mensagem recém-publicada
@@ -180,17 +180,17 @@ def requisicao():
             if response_consume.status_code == 200:
                 consumed_message = response_consume.json()
                 print(consumed_message[0])
-                if consumed_message[0]['temperatura'] == 'Desligar':
+                if consumed_message[0]['Dado'] == 'Desligar':
                     msg = 'Desligar'
-                    num = consumed_message[0]['num']
+                    num = consumed_message[0]['Num']
                     print(num, msg)
-                elif consumed_message[0]['temperatura'] == 'Ligar':
+                elif consumed_message[0]['Dado'] == 'Ligar':
                     msg = 'Ligar'
-                    num = consumed_message[0]['num']
+                    num = consumed_message[0]['Num']
                     print(num, msg)
                 else:
-                    msg = consumed_message[0]['temperatura']
-                    num = consumed_message[0]['num']
+                    msg = consumed_message[0]['Dado']
+                    num = consumed_message[0]['Num']
                 try:
                     print(clients)
                     print((num - 1))
@@ -213,7 +213,7 @@ def main():
         requisicao_thread.start()
 
         # Inicia a aplicação Flask
-        app.run(port=8088, debug=True)
+        app.run(host='0.0.0.0', port=8088, debug=True)
 
     except Exception as e:
         print('Erro:', e)

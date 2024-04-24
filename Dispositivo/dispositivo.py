@@ -22,7 +22,7 @@ def main():
         return print('\nNão foi possívvel se conectar ao servidor!\n')
 
     username = "Emanuel"
-    print('\nConectado')
+    print('\nDispositivo Conectado')
 
     thread1 = threading.Thread(target=receberTcp, args=[client])
     thread2 = threading.Thread(target=enviarMensagem, args=[client, username])
@@ -56,7 +56,7 @@ def receberTcp(client):
     while True:
         try:
             msg = client.recv(2048).decode()
-            print(msg+'\n')
+            #print(msg+'\n')
             if msg == 'Desligar':
                 MENSAGE = msg
             elif msg == 'Ligar':
@@ -87,15 +87,18 @@ def menu():
     global MENSAGE
     global BRILHO
     while True:
-        print("(1) Ligar\n(2) Desligar\n(3) Mudar Brilho\n")
+        print("digite\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados")
         n = int(input())
         if(n == 1):
             MENSAGE = "Ligar"
-        elif(n ==2):
+        elif(n == 2):
             MENSAGE = "Desligar"
-        else:
+        elif(n == 3):
             b = int(input('Brilho: '))   
             BRILHO = str(b)
+        else:
+            print("Brilho do dispositivo: {}\nStatus do dispositivo: {}".format(BRILHO, MENSAGE))
+            b = input('Digite enter para solicitar outro comando!')
         print("Voce decidiu", MENSAGE, "o dispositivo")
         limpar_terminal()
  
