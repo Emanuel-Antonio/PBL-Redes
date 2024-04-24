@@ -1,12 +1,11 @@
 import requests
 import threading
-import time
 import os
 import json
 import datetime
 
 def verificaDados():
-    url_consume = 'http://127.0.0.1:8081/dispositivos'  # Rota para consumir a API
+    url_consume = 'http://127.0.0.1:8088/dispositivos'  # Rota para consumir a API
 
     try:
         # Consumir a API para obter a mensagem recém-publicada
@@ -38,11 +37,11 @@ def pegar_horario_atual_json():
     return horario_dict
 
 def enviarRequisicao(num, comando):
-    url_publish = 'http://127.0.0.1:8081/requisicoes'
+    url_publish = 'http://127.0.0.1:8088/requisicoes'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'temperatura': comando, 'id': num}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'temperatura': comando, 'num': num}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 
@@ -61,13 +60,16 @@ def enviarRequisicao(num, comando):
     
 def menu():
     while True:
-        num = int(input('escreva o número do cliente que deseja mandar um comando: '))
+        num = int(input('num dispositivo\n'))
         comando = int(input("digite\n1 - Ligar\n 2 - Desligar"))
         if comando == 1:
             comando = 'Ligar'
-        else:
+        elif comando == 2:
             comando = 'Desligar'
-        enviarRequisicao(num, comando)
+        else:
+            comando = str(comando)
+        enviarRequisicao(num, comando)          
+        verificaDados()
     
 def limpar_terminal():
     # Verifica se o sistema operacional é Windows
@@ -81,8 +83,6 @@ def main():
     while True:
         menu_thread = threading.Thread(target=menu)
         menu_thread.start()
-        time.sleep(10)
-        verificaDados()
-    
+            
 if __name__=="__main__":
     main()
