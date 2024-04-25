@@ -4,8 +4,11 @@ import os
 import json
 import datetime
 
+IP = '192.168.1.105' 
+
 def verificaDados():
-    url_consume = 'http://192.168.1.105:8088/dispositivos'  # Rota para consumir a API
+    global IP
+    url_consume = f'http://{IP}:8088/dispositivos'  # Rota para consumir a API
 
     try:
         # Consumir a API para obter a mensagem recém-publicada
@@ -19,7 +22,7 @@ def verificaDados():
         else:
             print("Erro ao consumir a API:", response_consume.status_code)
     except Exception as e:
-        print('Erro ao enviar/receber dados para/de API:', e)
+        print('Broker desconectado ...')
         
 def pegar_horario_atual_json():
     agora = datetime.datetime.now()
@@ -37,7 +40,8 @@ def pegar_horario_atual_json():
     return horario_dict
 
 def enviarRequisicao(num, comando):
-    url_publish = 'http://192.168.1.105:8088/requisicoes'
+    global IP
+    url_publish = f'http://{IP}:8088/requisicoes'
 
     try:
         # Preparar os dados para publicar na API
@@ -56,12 +60,13 @@ def enviarRequisicao(num, comando):
             print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
             return
     except Exception as e:
-        print('Erro ao enviar/receber dados para/de API:', e)
+        print('Broker desconectado ...')
     
 def menu():
     while True:
-        opcao = int(input("digite\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados\n"))    
-        num = int(input('num dispositivo: '))
+        opcao = int(input("digite\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados\n")) 
+        if(opcao != 4):   
+            num = int(input('Dispositivo: '))
         if opcao == 1:
             comando = 'Ligar'
             enviarRequisicao(num, comando)          

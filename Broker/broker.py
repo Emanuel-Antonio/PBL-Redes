@@ -22,6 +22,8 @@ dispositivos = []
 
 requisicoes = []
 
+enderecos = []
+
 # Rota para listar todos os usuários
 @app.route('/dispositivos', methods=['GET'])
 def get_usuarios():
@@ -95,7 +97,7 @@ def pegar_horario_atual_json():
     return horario_dict
 
 def enviar_para_api(data_udp):
-    url_publish = 'http://192.168.1.105:8088/dispositivos'
+    url_publish = 'http://127.0.0.1:8088/dispositivos'
 
     try:
         # Preparar os dados para publicar na API
@@ -116,7 +118,7 @@ def enviar_para_api(data_udp):
         print('Erro ao enviar/receber dados para/de API:', e)
 
 def atualizar_dado_api(dado_udp, id):
-    url_update = 'http://192.168.1.105:8088/dispositivo/{}'.format(id)
+    url_update = 'http://127.0.0.1:8088/dispositivo/{}'.format(id)
 
     try:
         # Preparar os dados para atualizar na API
@@ -137,7 +139,7 @@ def atualizar_dado_api(dado_udp, id):
         print('Erro ao enviar/receber dados para/de API:', e)
         
 def remover_dispositivo(dado_id):
-    url_delete = 'http://192.168.1.105:8088/dispositivo/{}'.format(dado_id)
+    url_delete = 'http://127.0.0.1:8088/dispositivo/{}'.format(dado_id)
 
     try:
         # Enviar requisição DELETE para remover o dado da API
@@ -153,7 +155,7 @@ def remover_dispositivo(dado_id):
         print('Erro ao enviar/receber dados para/de API:', e)
 
 def remover_requisicao(dado_id):
-    url_delete = 'http://192.168.1.105:8088/requisicoes/{}'.format(dado_id)
+    url_delete = 'http://127.0.0.1:8088/requisicoes/{}'.format(dado_id)
 
     try:
         # Enviar requisição DELETE para remover o dado da API
@@ -171,7 +173,7 @@ def remover_requisicao(dado_id):
 def requisicao():
     global msg
     global num
-    url_consume = 'http://192.168.1.105:8088/requisicoes'  # Rota para consumir a API
+    url_consume = 'http://127.0.0.1:8088/requisicoes'  # Rota para consumir a API
     while True:
         try:
             # Consumir a API para obter a mensagem recém-publicada
@@ -179,25 +181,26 @@ def requisicao():
             # Verificar se a mensagem foi consumida com sucesso
             if response_consume.status_code == 200:
                 consumed_message = response_consume.json()
-                print(consumed_message[0])
-                if consumed_message[0]['Dado'] == 'Desligar':
-                    msg = 'Desligar'
-                    num = consumed_message[0]['Num']
-                    print(num, msg)
-                elif consumed_message[0]['Dado'] == 'Ligar':
-                    msg = 'Ligar'
-                    num = consumed_message[0]['Num']
-                    print(num, msg)
-                else:
-                    msg = consumed_message[0]['Dado']
-                    num = consumed_message[0]['Num']
-                try:
-                    print(clients)
-                    print((num - 1))
-                    clients[(num - 1)].send(msg.encode())
-                    remover_requisicao(1)
-                except Exception as e:
-                    print(e)
+                if len(consumed_message) > 0: 
+                    print(consumed_message[0])
+                    if consumed_message[0]['Dado'] == 'Desligar':
+                        msg = 'Desligar'
+                        num = consumed_message[0]['Num']
+                        print(num, msg)
+                    elif consumed_message[0]['Dado'] == 'Ligar':
+                        msg = 'Ligar'
+                        num = consumed_message[0]['Num']
+                        print(num, msg)
+                    else:
+                        msg = consumed_message[0]['Dado']
+                        num = consumed_message[0]['Num']
+                    try:
+                        print(clients)
+                        print((num - 1))
+                        clients[(num - 1)].send(msg.encode())
+                        remover_requisicao(1)
+                    except Exception as e:
+                        print(e)
         except Exception as e:
             print('Erro ao enviar/receber dados para/de API:', e)
             pass
@@ -230,8 +233,12 @@ def tcp_udp_server():
         return print("Servidor Funcionando")
     while True:
         client, addr = server.accept()
-        clients.append(client)
-        
+        if addr not in enderecos:
+            enderecos.append(addr)
+            clients.append(client)
+        else:
+            enderecos[enderecos.index(addr)] = addr
+            clients[enderecos.index(addr)] = client
         thread2 = threading.Thread(target=receberTcp, args=[client])
         thread3 = threading.Thread(target=receberUdp, args=[server_udp])
         thread2.start()

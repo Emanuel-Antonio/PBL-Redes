@@ -65,11 +65,15 @@ def receberTcp(client):
                 BRILHO = msg
                 MENSAGE = 'Ligar' 
         except Exception as e:
-            print('\nNão foi possível permanecer conectado no servidor!\n', e)
+            print('\nBroker desconectado ...\n')
             print('Pressione <Enter> Para continuar...')
-            client.close()
-            break
-            
+            try:
+                client.close()
+                client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                client.connect((SERVER_IP, TCP_PORT))
+            except Exception as e:
+                pass
+
 
 def enviarMensagem(client, username):
     while True:
