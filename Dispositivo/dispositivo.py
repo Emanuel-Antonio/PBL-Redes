@@ -33,23 +33,53 @@ def main():
     thread2.start()
     thread3.start()
     thread4.start()
-    
-def enviarDadoUdp(client_udp):
-    global BRILHO
+
+def menu():
     global MENSAGE
+    global BRILHO
     while True:
         try:
-            #print(BRILHO)
-            if MENSAGE == 'Desligar':
-                client_udp.sendto(b"Desligar", (SERVER_IP, UDP_PORT))
+            print("===========================================\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados\n===========================================")
+            n = int(input("Digite o Comando: "))
+            if MENSAGE == 'Desligar' and n == 3:
+                n = 0
+                print("Primeiro ligue o dispositivo para alterar seu Brilho!")
+            while n < 1 or n > 4:
+                n = int(input("Digite um comando válido: "))
+                if MENSAGE == 'Desligar' and n == 3:
+                    n = 0
+                    print("Primeiro ligue o dispositivo para alterar seu Brilho!")
+            print("===========================================")
+            if(n == 1):
+                MENSAGE = "Ligar"
+                print("Ligando dispositivo ...")
+                b = input('Digite enter para solicitar outro comando!\n===========================================')
+                while b != '':
+                    b = input('Digite enter para solicitar outro comando!\n===========================================')
+            elif(n == 2):
+                MENSAGE = "Desligar"
+                print("Desligando Dispositivo ...")
+                b = input('Digite enter para solicitar outro comando!\n===========================================')
+                while b != '':
+                    b = input('Digite enter para solicitar outro comando!\n===========================================')
+            elif(n == 3):
+                b = int(input('Brilho: ')) 
+                while b > 100 or b < 0:
+                    b = int(input('Digite um valor válido para o Brilho: '))   
+                BRILHO = str(b)
+                print("Mudança efetuada com sucesso ...")
+                b = input('Digite enter para solicitar outro comando!\n===========================================')
+                while b != '':
+                    b = input('Digite enter para solicitar outro comando!\n===========================================')
             else:
-                #temperatura = gerarTemperaturaFake()
-                #temperatura_str = str(temperatura)
-                client_udp.sendto(BRILHO.encode(), (SERVER_IP, UDP_PORT))
-            time.sleep(5)
+                print("Brilho do dispositivo: {}\nStatus do dispositivo: {}".format(BRILHO, MENSAGE))
+                b = input('Digite enter para solicitar outro comando!\n===========================================')
+                while b != '':
+                    b = input('Digite enter para solicitar outro comando!\n===========================================')
         except Exception as e:
-            print(e)
-        
+            pass
+        limpar_terminal()
+
 def receberTcp(client):
     global MENSAGE
     global BRILHO
@@ -74,7 +104,6 @@ def receberTcp(client):
             except Exception as e:
                 pass
 
-
 def enviarMensagem(client, username):
     while True:
         try:
@@ -82,29 +111,22 @@ def enviarMensagem(client, username):
             client.send(f'<{username}> {msg}'.encode())
         except:
             return
-        
-def gerarTemperaturaFake():
-    # Gerar uma temperatura fictícia entre -20°C e 40°C
-    return round(random.uniform(-20, 40), 2)
-
-def menu():
-    global MENSAGE
+          
+def enviarDadoUdp(client_udp):
     global BRILHO
+    global MENSAGE
     while True:
-        print("digite\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados")
-        n = int(input())
-        if(n == 1):
-            MENSAGE = "Ligar"
-        elif(n == 2):
-            MENSAGE = "Desligar"
-        elif(n == 3):
-            b = int(input('Brilho: '))   
-            BRILHO = str(b)
-        else:
-            print("Brilho do dispositivo: {}\nStatus do dispositivo: {}".format(BRILHO, MENSAGE))
-            b = input('Digite enter para solicitar outro comando!')
-        print("Voce decidiu", MENSAGE, "o dispositivo")
-        limpar_terminal()
+        try:
+            #print(BRILHO)
+            if MENSAGE == 'Desligar':
+                client_udp.sendto(b"Desligar", (SERVER_IP, UDP_PORT))
+            else:
+                #temperatura = gerarTemperaturaFake()
+                #temperatura_str = str(temperatura)
+                client_udp.sendto(BRILHO.encode(), (SERVER_IP, UDP_PORT))
+            time.sleep(0.5)
+        except Exception as e:
+            print(e)
  
 def limpar_terminal():
     # Verifica se o sistema operacional é Windows

@@ -2,10 +2,111 @@ import requests
 import threading
 import os
 import json
-import datetime
 
 IP = '192.168.1.105' 
 
+def main():
+    menu_thread = threading.Thread(target=menu)
+    menu_thread.start()
+    
+def menu():
+    while True:
+        try:
+            idDispositivos = []
+            statusDispositivos = []
+            dadoDispositivos = verificaDados()
+            for item in dadoDispositivos:
+                idDispositivos.append(item['id'])
+                statusDispositivos.append(item['Dado']) 
+            opcao = int(input("=====================================================\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados do Dispositivo\n5 - Visualizar Dispositivos Conectados\n=====================================================\nDigite um comando: ")) 
+            print("=====================================================")
+            while opcao < 1 or opcao > 5:
+                opcao = int(input("Digite um comando válido: "))
+                print("=====================================================")
+            if(opcao != 5):   
+                num = int(input('Dispositivo: '))
+                print("=====================================================")
+                while num not in idDispositivos:
+                    num = int(input('Digite um Dispositivo válido: '))
+                    print("=====================================================")
+            while opcao == 3 and statusDispositivos[num-1] == 'Desligar':
+                print('Primeiro ligue o dispositivo para alterar o seu Brilho!')
+                print("=====================================================")
+                opcao = 0
+            while opcao == 1 and statusDispositivos[num-1] != 'Desligar':
+                print('O dispositivo já está Ligado!')
+                print("=====================================================")
+                opcao = 0
+            while opcao == 2 and statusDispositivos[num-1] == 'Desligar':
+                print('O dispositivo já está Desligado!')
+                print("=====================================================")
+                opcao = 0
+            if opcao == 1:
+                comando = 'Ligar'
+                enviarRequisicao(num, comando)
+                print("Ligando dispositivo ...")
+                b = input('Digite enter para solicitar outro comando!')
+                print("=====================================================")
+                while b != '':
+                    b = input('Digite enter para solicitar outro comando!\n=====================================================')       
+            elif opcao == 2:
+                comando = 'Desligar'
+                enviarRequisicao(num, comando) 
+                print("Desligando dispositivo ...")
+                n = input('Digite enter para solicitar outro comando!')
+                print("=====================================================")
+                while n != '':
+                    n = input('Digite enter para solicitar outro comando!\n=====================================================')        
+            elif opcao == 3:
+                n = int(input("Digite o Brilho: "))
+                while n > 100 or n < 0:
+                    n = int(input('Digite um valor válido para o Brilho: ')) 
+                    print("=====================================================")
+                comando = str(n)
+                enviarRequisicao(num, comando)   
+                print("Mudança efetuada com sucesso ...")
+                b = input('Digite enter para solicitar outro comando!') 
+                print("=====================================================")
+                while b != '':
+                    b = input('Digite enter para solicitar outro comando!\n=====================================================') 
+            elif opcao == 4:
+                for i in range(len(dadoDispositivos)):
+                    if i == (num - 1):
+                        print("Id: {}\nDado: {}\nData: {}".format(dadoDispositivos[i]['id'], dadoDispositivos[i]['Dado'], dadoDispositivos[i]['Data']))
+                n = input('Digite enter para mandar outra requisição!')
+                print("=====================================================")
+                while n != '':
+                    n = input('Digite enter para solicitar outro comando!\n=====================================================')
+            elif opcao == 0:
+                n = input('Digite enter para mandar outra requisição!')
+                print("=====================================================")
+                while n != '':
+                    n = input('Digite enter para solicitar outro comando!\n=====================================================')
+            else:
+                for item in dadoDispositivos:
+                    if item != {}:
+                        print("Id: {}\nDado: {}\nData: {}\n".format(item['id'], item['Dado'], item['Data']))
+                        print("=====================================================")
+                n = input('Digite enter para mandar outra requisição!')
+                print("=====================================================")
+                while n != '':
+                    n = input('Digite enter para solicitar outro comando!\n=====================================================')
+        except Exception as e:
+            pass 
+        limpar_terminal()
+   
+def limpar_terminal():
+    # Verifica se o sistema operacional é Windows
+    if os.name == 'nt':
+        os.system('cls')  # Limpa o terminal no Windows
+    else:
+        # Limpa o terminal em sistemas Unix (Linux, macOS, etc.)
+        os.system('clear')   
+    
+################################################################################################
+###################################     API    #################################################
+################################################################################################
+     
 def verificaDados():
     global IP
     url_consume = f'http://{IP}:8088/dispositivos'  # Rota para consumir a API
@@ -17,27 +118,11 @@ def verificaDados():
         # Verificar se a mensagem foi consumida com sucesso
         if response_consume.status_code == 200:
             consumed_message = response_consume.json()
-
-            print("Mensagem consumida da API:", consumed_message)
         else:
             print("Erro ao consumir a API:", response_consume.status_code)
     except Exception as e:
         print('Broker desconectado ...')
-        
-def pegar_horario_atual_json():
-    agora = datetime.datetime.now()
-    hora = agora.hour
-    minutos = agora.minute
-    segundos = agora.second
-    
-    # Criando um dicionário com os valores
-    horario_dict = {
-        "hora": hora,
-        "minutos": minutos,
-        "segundos": segundos
-    }
-    
-    return horario_dict
+    return consumed_message
 
 def enviarRequisicao(num, comando):
     global IP
@@ -54,45 +139,12 @@ def enviarRequisicao(num, comando):
 
         # Verificar se a publicação foi bem-sucedida
         if response_publish.status_code == 201:
-            print("Dados UDP enviados com sucesso para a API.")
-            print(json_payload)
+            pass
         else:
             print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
             return
     except Exception as e:
         print('Broker desconectado ...')
-    
-def menu():
-    while True:
-        opcao = int(input("digite\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados\n")) 
-        if(opcao != 4):   
-            num = int(input('Dispositivo: '))
-        if opcao == 1:
-            comando = 'Ligar'
-            enviarRequisicao(num, comando)          
-        elif opcao == 2:
-            comando = 'Desligar'
-            enviarRequisicao(num, comando)          
-        elif opcao == 3:
-            n = int(input("Digite o Brilho: "))
-            comando = str(n)
-            enviarRequisicao(num, comando)          
-        else:
-            verificaDados()
-            n = input('Digite enter para mandar outra requisição!')
-        limpar_terminal()
-    
-def limpar_terminal():
-    # Verifica se o sistema operacional é Windows
-    if os.name == 'nt':
-        os.system('cls')  # Limpa o terminal no Windows
-    else:
-        # Limpa o terminal em sistemas Unix (Linux, macOS, etc.)
-        os.system('clear')
-
-def main():
-    menu_thread = threading.Thread(target=menu)
-    menu_thread.start()
-            
+                   
 if __name__=="__main__":
     main()

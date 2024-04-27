@@ -16,13 +16,78 @@ lock = threading.Lock()
 msg = 'Ligar'
 num = 1
 
-
 # Lista de usuários
 dispositivos = []
 
 requisicoes = []
 
 enderecos = []
+
+def main():
+    try:
+        # Inicia os servidores TCP e UDP em threads separadas
+        tcp_thread = threading.Thread(target=tcp_udp_server)
+        requisicao_thread = threading.Thread(target=requisicao)
+        tcp_thread.start()
+        requisicao_thread.start()
+
+        # Inicia a aplicação Flask
+        app.run(host='0.0.0.0', port=8088, debug=True)
+
+    except Exception as e:
+        print('Erro:', e)
+        
+def tcp_udp_server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    try:
+        server.bind(('0.0.0.0', 65432))
+        server_udp.bind(("0.0.0.0", 65433))
+        server.listen()
+    except:
+        return print(" * Servidor Funcionando")
+    while True:
+        client, addr = server.accept()
+        if addr[0] not in enderecos:
+            enderecos.append(addr[0])
+            clients.append(client)
+        else:
+            clients[enderecos.index(addr[0])] = client
+        thread2 = threading.Thread(target=receberTcp, args=[client])
+        thread3 = threading.Thread(target=receberUdp, args=[server_udp])
+        thread2.start()
+        thread3.start()
+        
+def receberTcp(client):
+    data_tcp = client.recv(1024)
+    print(clients)
+    print('Mensagem recebida do cliente TCP:', data_tcp.decode())   
+              
+def receberUdp(server_udp):
+    global dispositivosConectados
+    while True:
+        try:
+            # Recebe dados do cliente UDP
+            data_udp, addr_udp = server_udp.recvfrom(1024)
+            print('Conectado por UDP:', addr_udp)
+            print('Mensagem recebida do cliente UDP:', data_udp.decode())
+            if(data_udp.decode() != "Desligar"):
+                if(addr_udp[0] not in dispositivosConectados):
+                    dispositivosConectados.append(addr_udp[0])
+                    enviar_para_api(data_udp)
+                else:
+                    atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
+            else:
+                atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
+                #remover_dispositivo(dispositivosConectados.index(addr_udp) + 1)
+                #ispositivosConectados.remove(addr_udp)
+        except Exception as e:
+            print('Item já removido')
+            
+################################################################################################
+###################################     API    #################################################
+################################################################################################
 
 # Rota para listar todos os usuários
 @app.route('/dispositivos', methods=['GET'])
@@ -204,71 +269,9 @@ def requisicao():
         except Exception as e:
             print('Erro ao enviar/receber dados para/de API:', e)
             pass
-        time.sleep(3)
-    
-def main():
+        time.sleep(0.5)
 
-    try:
-        # Inicia os servidores TCP e UDP em threads separadas
-        tcp_thread = threading.Thread(target=tcp_udp_server)
-        requisicao_thread = threading.Thread(target=requisicao)
-        tcp_thread.start()
-        requisicao_thread.start()
-
-        # Inicia a aplicação Flask
-        app.run(host='0.0.0.0', port=8088, debug=True)
-
-    except Exception as e:
-        print('Erro:', e)
-        
-def tcp_udp_server():
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    try:
-        server.bind(('0.0.0.0', 65432))
-        server_udp.bind(("0.0.0.0", 65433))
-        server.listen()
-    except:
-        return print("Servidor Funcionando")
-    while True:
-        client, addr = server.accept()
-        if addr not in enderecos:
-            enderecos.append(addr)
-            clients.append(client)
-        else:
-            enderecos[enderecos.index(addr)] = addr
-            clients[enderecos.index(addr)] = client
-        thread2 = threading.Thread(target=receberTcp, args=[client])
-        thread3 = threading.Thread(target=receberUdp, args=[server_udp])
-        thread2.start()
-        thread3.start()
-                
-def receberUdp(server_udp):
-    global dispositivosConectados
-    while True:
-        try:
-            # Recebe dados do cliente UDP
-            data_udp, addr_udp = server_udp.recvfrom(1024)
-            print('Conectado por UDP:', addr_udp)
-            print('Mensagem recebida do cliente UDP:', data_udp.decode())
-            if(data_udp.decode() != "Desligar"):
-                if(addr_udp not in dispositivosConectados):
-                    dispositivosConectados.append(addr_udp)
-                    enviar_para_api(data_udp)
-                else:
-                    atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp) + 1)
-            else:
-                atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp) + 1)
-                #remover_dispositivo(dispositivosConectados.index(addr_udp) + 1)
-                #ispositivosConectados.remove(addr_udp)
-        except Exception as e:
-            print('Item já removido')
-            
-def receberTcp(client):
-    data_tcp = client.recv(1024)
-    print(clients)
-    print('Mensagem recebida do cliente TCP:', data_tcp.decode())
-
+################################################################################################
+ 
 if __name__ == "__main__":
     main()
