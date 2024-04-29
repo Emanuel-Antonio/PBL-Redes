@@ -72,7 +72,7 @@ def menu():
                 while b != '':
                     b = input('Digite enter para solicitar outro comando!\n===========================================')
             else:
-                print("Brilho do dispositivo: {}\nStatus do dispositivo: {}".format(BRILHO, MENSAGE))
+                print("Brilho do dispositivo: {}\nStatus do dispositivo: {}".format(BRILHO, MENSAGE[:-1] + 'do'))
                 b = input('Digite enter para solicitar outro comando!\n===========================================')
                 while b != '':
                     b = input('Digite enter para solicitar outro comando!\n===========================================')
@@ -119,7 +119,7 @@ def enviarDadoUdp(client_udp):
         try:
             #print(BRILHO)
             if MENSAGE == 'Desligar':
-                client_udp.sendto(b"Desligar", (SERVER_IP, UDP_PORT))
+                client_udp.sendto(b"Desligado", (SERVER_IP, UDP_PORT))
             else:
                 #temperatura = gerarTemperaturaFake()
                 #temperatura_str = str(temperatura)

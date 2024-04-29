@@ -75,7 +75,7 @@ def receberUdp(server_udp):
             if(data_udp.decode() != "Desligar"):
                 if(addr_udp[0] not in dispositivosConectados):
                     dispositivosConectados.append(addr_udp[0])
-                    enviar_para_api(data_udp)
+                    enviar_para_api(data_udp, addr_udp[0])
                 else:
                     atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
             else:
@@ -161,12 +161,12 @@ def pegar_horario_atual_json():
     
     return horario_dict
 
-def enviar_para_api(data_udp):
+def enviar_para_api(data_udp, addr):
     url_publish = 'http://127.0.0.1:8088/dispositivos'
 
     try:
         # Preparar os dados para publicar na API
-        payload = {'Dado': data_udp.decode(), 'Data': pegar_horario_atual_json()}  # Supondo que data_udp é uma sequência de bytes
+        payload = {'endereco': addr, 'Dado': data_udp.decode(), 'Data': pegar_horario_atual_json()}  # Supondo que data_udp é uma sequência de bytes
         json_payload = json.dumps(payload)  # Convertendo para JSON
         headers = {'Content-Type': 'application/json'}
 

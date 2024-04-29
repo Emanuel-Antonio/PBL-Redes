@@ -4,6 +4,7 @@ import os
 import json
 
 IP = '192.168.1.105' 
+ 
 
 def main():
     menu_thread = threading.Thread(target=menu)
@@ -14,12 +15,12 @@ def menu():
         try:
             idDispositivos = []
             statusDispositivos = []
+            opcao = int(input("=====================================================\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados do Dispositivo\n5 - Visualizar Dispositivos Conectados\n=====================================================\nDigite um comando: ")) 
+            print("=====================================================")
             dadoDispositivos = verificaDados()
             for item in dadoDispositivos:
                 idDispositivos.append(item['id'])
                 statusDispositivos.append(item['Dado']) 
-            opcao = int(input("=====================================================\n1 - Ligar\n2 - Desligar\n3 - Mudar Brilho\n4 - Visualizar Dados do Dispositivo\n5 - Visualizar Dispositivos Conectados\n=====================================================\nDigite um comando: ")) 
-            print("=====================================================")
             while opcao < 1 or opcao > 5:
                 opcao = int(input("Digite um comando válido: "))
                 print("=====================================================")
@@ -29,15 +30,15 @@ def menu():
                 while num not in idDispositivos:
                     num = int(input('Digite um Dispositivo válido: '))
                     print("=====================================================")
-            while opcao == 3 and statusDispositivos[num-1] == 'Desligar':
+            while opcao == 3 and statusDispositivos[num-1] == 'Desligado':
                 print('Primeiro ligue o dispositivo para alterar o seu Brilho!')
                 print("=====================================================")
                 opcao = 0
-            while opcao == 1 and statusDispositivos[num-1] != 'Desligar':
+            while opcao == 1 and statusDispositivos[num-1] != 'Desligado':
                 print('O dispositivo já está Ligado!')
                 print("=====================================================")
                 opcao = 0
-            while opcao == 2 and statusDispositivos[num-1] == 'Desligar':
+            while opcao == 2 and statusDispositivos[num-1] == 'Desligado':
                 print('O dispositivo já está Desligado!')
                 print("=====================================================")
                 opcao = 0
@@ -72,7 +73,7 @@ def menu():
             elif opcao == 4:
                 for i in range(len(dadoDispositivos)):
                     if i == (num - 1):
-                        print("Id: {}\nDado: {}\nData: {}".format(dadoDispositivos[i]['id'], dadoDispositivos[i]['Dado'], dadoDispositivos[i]['Data']))
+                        print("Id: {}\nendereco: {}\nDado: {}\nData: {}".format(dadoDispositivos[i]['id'], dadoDispositivos[i]['endereco'], dadoDispositivos[i]['Dado'], dadoDispositivos[i]['Data']))
                 n = input('Digite enter para mandar outra requisição!')
                 print("=====================================================")
                 while n != '':
@@ -85,14 +86,17 @@ def menu():
             else:
                 for item in dadoDispositivos:
                     if item != {}:
-                        print("Id: {}\nDado: {}\nData: {}\n".format(item['id'], item['Dado'], item['Data']))
+                        print("Id: {}\nEndereco: {}\nDado: {}\nData: {}\n".format(item['id'], item['endereco'], item['Dado'], item['Data']))
                         print("=====================================================")
                 n = input('Digite enter para mandar outra requisição!')
                 print("=====================================================")
                 while n != '':
                     n = input('Digite enter para solicitar outro comando!\n=====================================================')
         except Exception as e:
-            pass 
+            n = input('Digite enter para mandar outra requisição!')
+            print("=====================================================")
+            while n != '':
+                n = input('Digite enter para solicitar outro comando!\n=====================================================')
         limpar_terminal()
    
 def limpar_terminal():
@@ -113,7 +117,7 @@ def verificaDados():
 
     try:
         # Consumir a API para obter a mensagem recém-publicada
-        response_consume = requests.get(url_consume)
+        response_consume = requests.get(url_consume, timeout=2)
 
         # Verificar se a mensagem foi consumida com sucesso
         if response_consume.status_code == 200:
@@ -135,7 +139,7 @@ def enviarRequisicao(num, comando):
         headers = {'Content-Type': 'application/json'}
 
         # Publicar na API
-        response_publish = requests.post(url_publish, data=json_payload, headers=headers)
+        response_publish = requests.post(url_publish, data=json_payload, timeout=2, headers=headers)
 
         # Verificar se a publicação foi bem-sucedida
         if response_publish.status_code == 201:
