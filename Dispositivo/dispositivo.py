@@ -5,7 +5,7 @@ import random
 import os
 
 # Configurações do cliente
-SERVER_IP = '192.168.1.105'   # Endereço IP do servidor de destino, no caso, broker
+IP = '192.168.1.105'   # Endereço IP do servidor de destino, no caso, broker
 TCP_PORT = 65432              # Porta TCP do servidor
 UDP_PORT = 65433              # Porta UDP do servidor para resposta
 MENSAGE = 'Ligar'
@@ -17,7 +17,7 @@ def main():
     client_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     try:
-        client.connect((SERVER_IP, TCP_PORT))
+        client.connect((IP, TCP_PORT))
     except:
         return print('\nNão foi possívvel se conectar ao servidor!\n')
 
@@ -100,7 +100,7 @@ def receberTcp(client):
             try:
                 client.close()
                 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                client.connect((SERVER_IP, TCP_PORT))
+                client.connect((IP, TCP_PORT))
             except Exception as e:
                 pass
 
@@ -119,11 +119,11 @@ def enviarDadoUdp(client_udp):
         try:
             #print(BRILHO)
             if MENSAGE == 'Desligar':
-                client_udp.sendto(b"Desligado", (SERVER_IP, UDP_PORT))
+                client_udp.sendto(b"Desligado", (IP, UDP_PORT))
             else:
                 #temperatura = gerarTemperaturaFake()
                 #temperatura_str = str(temperatura)
-                client_udp.sendto(BRILHO.encode(), (SERVER_IP, UDP_PORT))
+                client_udp.sendto(BRILHO.encode(), (IP, UDP_PORT))
             time.sleep(0.5)
         except Exception as e:
             print(e)
