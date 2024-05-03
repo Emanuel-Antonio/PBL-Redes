@@ -1,14 +1,17 @@
-Internet das Coisas
- 
-## Introdução:
+# Internet das Coisas - IOT
+
+# Introdução
 
 .....
 # Broker
 
+.....
 # Dispositivo
 
+.....
 # Cliente
 
+.....
 # Como Executar
 
 ## Etapas:
@@ -31,7 +34,7 @@ Internet das Coisas
      1. Execute o seguinte comando no terminal dentro das pastas Cliente, Dispositivo e Broker: "docker build -t nome_do_arquivo .", para gerar as imagens, repita três vezes.
      2. Agora execute as imagens usando o comando "docker run --network='host' -it nome_da_imagem" para executar as três imagens criadas, vale ressaltar que esse processo deve ser feito três vezes já que são três imagens distintas.
 
-## Conclusão:
+# Conclusão
 
 .....
 
