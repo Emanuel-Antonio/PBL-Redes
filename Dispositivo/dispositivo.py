@@ -76,7 +76,7 @@ def menu():
                 b = input('Digite enter para solicitar outro comando!\n===========================================')
                 while b != '':
                     b = input('Digite enter para solicitar outro comando!\n===========================================')
-        except Exception as e:
+        except ValueError as e:
             pass
         limpar_terminal()
 
@@ -126,7 +126,7 @@ def enviarDadoUdp(client_udp):
                 client_udp.sendto(BRILHO.encode(), (IP, UDP_PORT))
             time.sleep(0.5)
         except Exception as e:
-            print(e)
+            pass
  
 def limpar_terminal():
     # Verifica se o sistema operacional é Windows

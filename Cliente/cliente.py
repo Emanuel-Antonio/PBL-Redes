@@ -5,7 +5,6 @@ import json
 
 IP = '192.168.1.105' 
  
-
 def main():
     menu_thread = threading.Thread(target=menu)
     menu_thread.start()
@@ -92,7 +91,7 @@ def menu():
                 print("=====================================================")
                 while n != '':
                     n = input('Digite enter para solicitar outro comando!\n=====================================================')
-        except Exception as e:
+        except ValueError as e:
             n = input('Digite enter para mandar outra requisição!')
             print("=====================================================")
             while n != '':
