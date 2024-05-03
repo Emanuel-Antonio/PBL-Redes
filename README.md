@@ -6,14 +6,70 @@
 
 # Introdução
 
-.....
+No projeto de Concorrência e Conectividade, criamos uma solução em Python. Nela, dispositivos IoT se comunicam com um broker central, que por sua vez facilita a interação com uma interface de controle. Focamos em eficiência e escalabilidade, permitindo múltiplas conexões simultâneas e assegurando uma comunicação fluida e confiável entre dispositivos e a interface do usuário. Essa abordagem não apenas reforça a conectividade na infraestrutura IoT, mas também estabelece uma base sólida para futuras expansões e inovações no campo da Internet das Coisas.
+
 # Broker
 
 .....
 # Dispositivo
-
+- ***Gerenciamento do dispositivo:***
+  
 .....
 # Cliente
+
+.....
+# Tecnologias utilizadas
+
+- ***Ferramantas:*** Para o desenvolvimento desta aplicação, utilizamos ferramentas como Insomnia e Visual Studio Code.
+
+- ***Outras:*** Para a produção do código fonte, utilizamos a linguagem de programação Python, além de algumas bibliotecas dessa linguagem, tais como requests, Flask, etc.
+  
+# Arquitetura da solução
+Sobre a arquitetura utilizada para a troca de mensagens podemos citar a conexão "Dispositivo <-> Broker" e "Broker <-> Cliente". Além disso, utilizamos três componentes, sendo eles: dispositivo, broker e cliente. Note que ambos os componentes possuem uma seção contendo mais detalhes.
+  
+- ***Dispositivo -> Broker:*** A comunicação entre os dispositivos e o broker para o envio de dados foi feita através de sockets, via protocolo TCP/IP. Neste caso, utilizamos o protocolo UDP, pois ao enviarmos dados, a velocidade de envio foi uma prioridade.
+
+    `Observação:` Note que a conexão TCP é inicializada pelo dispositivo, permitindo que o broker envie requisições para os dispositivos conectados sem a necessidade de abrir múltiplas conexões pelo broker, o que demandaria a busca por diversos endereços físicos. No entanto, ele não envia dados utilizando TCP.
+  
+- ***Broker -> Dispositivo:*** A comunicação entre o broker e os dispositivos para o envio de comandos/requisições foi feita, assim como a comunicação do dispositivo com o broker, usando sockets, via protocolo TCP/IP. Porém, ao contrário da comunicação de dados, utilizamos o TCP, a fim de priorizar a segurança do envio de requisições.
+   
+- ***Broker <-> Cliente:*** A comunicação entre o broker e o cliente foi realizada por meio de rotas de uma API REST, utilizando verbos como: GET, POST, PUT E DELETE.
+
+     `Definição:` Uma API REST (Representational State Transfer) é uma arquitetura de comunicação que utiliza os princípios do protocolo HTTP para permitir a comunicação entre sistemas distribuídos.
+
+Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem, para isso observe a <br/> <em>Figura 1.</em> <br/>
+
+ <div align="center">
+   
+   ![Logo do Meu Projeto](Diagrama.png)
+   <br/> <em>Figura 1. Camada de Transporte.</em> <br/>
+   
+   </div>
+
+Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evidente que todas as informações passam pelo broker, independentemente de serem dados ou comandos. Por exemplo, se desejo enviar uma mensagem remotamente do cliente para um dispositivo, devo adicionar o comando à minha API através de uma rota. Em seguida, o broker utilizará o protocolo TCP/IP para enviar o comando ao dispositivo via TCP. Já na parte "Conexão Dispositivo -> Broker", é nos mostrado que o dispositivo inicia a comunicação TCP, a fim de que o broker identifique e armazene as conexões.
+   
+# Protocolo de comunicação entre dispositivo e Broker
+
+- ***Camada de Aplicação:***
+
+- ***Camada de Transporte:***
+
+   - **Dispositivo:** Sobre o protocolo que o dispositivo utiliza para se comunicar com o broker, devemos abordar que 
+   - **Broker:**
+
+# Interface da Aplicação (REST)
+
+.....
+# Formatacao, envio e tratamento de dados
+
+.....
+# Tratamento de conexões simultâneas
+
+.....
+# Desempenho
+
+.....
+# Confiabilidade da solução
 
 .....
 # Como Executar
