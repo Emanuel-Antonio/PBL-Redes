@@ -95,7 +95,7 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
 
  <div align="center">
    
-   ![Logo do Meu Projeto](Diagrama.png)
+   ![Logo do Meu Projeto](Imagens/Diagrama.png)
    <br/> <em>Figura 1. Camada de Transporte.</em> <br/>
    
    </div>
