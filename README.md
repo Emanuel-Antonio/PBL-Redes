@@ -160,7 +160,7 @@ Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos co
 
 <div align="center">
    
-   ![Fugura 5](Imagens/DELETE.png)
+   ![Figura 5](Imagens/DELETE.png)
    <br/> <em>Figura 5. Métodos DELETE.</em> <br/>
    
    </div>
@@ -171,14 +171,14 @@ A formatação dos dados já foi mencionada como strings específicas enviadas e
 
 <div align="center">
    
-   ![Fugura 6](Imagens/Dispositivos.png)
+   ![Figura 6](Imagens/Dispositivo.png)
    <br/> <em>Figura 6. Formato json dos Dispositivos.</em> <br/>
    
    </div>
 
 <div align="center">
    
-   ![Fugura 7](Imagens/Requisicoes.png)
+   ![Figura 7](Imagens/Requisicao.png)
    <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
    
    </div>
