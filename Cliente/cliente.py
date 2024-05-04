@@ -120,7 +120,7 @@ def verificaDados():
         else:
             print("Erro ao consumir a API:", response_consume.status_code)
     except Exception as e:
-        print('Broker desconectado ...')
+        print('Não foi possível estabelecer uma conxão com o Broker ...')
     return consumed_message
 
 def enviarRequisicao(num, comando):
@@ -143,7 +143,7 @@ def enviarRequisicao(num, comando):
             print("Erro ao enviar os dados UDP para a API:", response_publish.status_code)
             return
     except Exception as e:
-        print('Broker desconectado ...')
+        print('Não foi possível estabelecer uma conexão com o Broker ...')
                    
 if __name__=="__main__":
     main()
