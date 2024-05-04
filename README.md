@@ -305,6 +305,9 @@ Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se co
    
    </div>
 
+  `Observação:` Note que a essas imagens também demonstram alguns testes no meu arquivo "cliente.py".
+
+
 # Interface do Dispositivo
 
 Sobre a interface do Dispositivo, podemos verificar como ela se comporta de acordo com as Figuras a seguir. Além disso, assim como a interface do cliente, também está devidamente validada.
@@ -350,6 +353,8 @@ Sobre a interface do Dispositivo, podemos verificar como ela se comporta de acor
    <br/> <em>Figura 21. Opção 4 para visualizar as informações do Dispositivo.</em> <br/>
    
    </div>
+
+   `Observação:` Note que a essas imagens também demonstram alguns testes no meu arquivo "dispositivo.py".
 
 # Conclusão
 
