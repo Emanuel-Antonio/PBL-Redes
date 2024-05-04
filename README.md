@@ -48,30 +48,41 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
 
 Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evidente que todas as informações passam pelo broker, independentemente de serem dados ou comandos. Por exemplo, se desejo enviar uma mensagem remotamente do cliente para um dispositivo, devo adicionar o comando à minha API através de uma rota. Em seguida, o broker utilizará o protocolo TCP/IP para enviar o comando ao dispositivo via TCP. Já na parte "Conexão Dispositivo -> Broker", é nos mostrado que o dispositivo inicia a comunicação TCP, a fim de que o broker identifique e armazene as conexões.
    
-# Protocolo de comunicação entre dispositivo e Broker
+# Protocolo de Comunicação entre Dispositivo e Broker
 
 - ***Camada de Aplicação:***
+ 
+   - **Dispositivo:** Sobre o protocolo que o dispositivo utiliza para se comunicar com o broker, devemos abordar que o dispositivo começa criando uma comunicação TCP, o qual envia o "username" e "msg". Isto apenas para armazenar a conexão no broker. A partir desse ponto, ele cria a comunicação UDP e envia os dados continuamente a cada meio segundo para o broker.
+     
+   - `Observação:` É válido mencionar que os dados enviados via UDP consistem em um dado, seguida pelo endereço IP do dispositivo e a porta que ele utilizou para a comunicação. Além disso, esse dado pode representar o estado de 'Desligado' ou, respectivamente, o brilho atual do dispositivo. Note que para identificar se o dispositivo está ligado basta verificar se o dado é diferente de 'Desligado'.
+     
+   - **Broker:** Por parte do dispositivo, ele só encaminha mensagens utilizando TCP quando necessário. Para isso, ele verifica se há alguma requisição na API. Se for o caso, ele envia o dado para o respectivo dispositivo através da conexão previamente estabelecida. Esses dados podem ser "Desligar", "Ligar" ou o brilho a ser alterado. Por outro lado, na parte da aplicação, a cada dado que chega, é verificado se o dispositivo já foi armazenado. Se não foi, todos os dados são enviados para a API, incluindo Dado, Id, Endereço e Data. Caso contrário, apenas o Dado é atualizado na API.
 
+  - **Cliente:** O cliente envia os dados para a API quando solicitado. Nesse caso, ele fará uma requisição POST em uma determinada rota, que receberá os dados IP, Num e Dado, respectivamente. Além disso, quando for solicitado um dado de um dispositivo, o cliente apenas fará a leitura dos dados através de outra rota existente.
+    
+  - `Observação:` Os dados do IP são preenchidos automaticamente pela API. Já o número do dispositivo será escolhido pelo usuário e o Dado pode ser "Desligar", "Ligar" ou um inteiro referente ao valor do brilho a ser alterado.
+     
 - ***Camada de Transporte:***
 
-   - **Dispositivo:** Sobre o protocolo que o dispositivo utiliza para se comunicar com o broker, devemos abordar que 
-   - **Broker:**
+   - **Dispositivo:** Sobre o protocolo utilizado pelo dispositivo para se comunicar com o broker, é importante mencionar que foi utilizado o protocolo UDP para o envio de dados. A razão para optar pelo UDP em vez do TCP nesse caso é que o User Datagram Protocol (UDP) é caracterizado por uma baixa sobrecarga, uma vez que não incorpora mecanismos de controle de fluxo, retransmissão de pacotes ou garantias de entrega ordenada. Isso o torna mais eficiente em termos de largura de banda e tempo de latência. Além disso, sua natureza sem conexão e sem garantias proporciona uma baixa latência em comparação com o Transmission Control Protocol (TCP), tornando-o ideal para aplicativos que demandam uma resposta rápida e em tempo real, como streaming de áudio e vídeo, bem como jogos online. Em suma, mesmo que ocorra perda de dados, a velocidade de transmissão ainda compensa na maioria dos casos.
+     
+   - **Broker:** Falando do Broker, ele se comunica com o dispositivo utilizando o protocolo TCP para o envio de comandos. Porque, o Transmission Control Protocol (TCP) oferece confiabilidade ao garantir a entrega, ordem e integridade dos dados, utilizando mecanismos como confirmações de recebimento e retransmissões de pacotes perdidos. Além disso, o TCP inclui algoritmos para controlar o fluxo de dados entre remetente e destinatário, evitando sobrecarga do destinatário, e mecanismos para detectar e reagir a congestionamentos na rede, ajustando dinamicamente a taxa de transmissão. Outro aspecto importante é a garantia de entrega ordenada dos dados, fundamental para aplicativos que exigem essa ordem, como transferências de arquivos e streaming de mídia. Em resumo, utilizamos o TCP porque não queremos perder comandos/requisições.
 
 # Interface da Aplicação (REST)
 
 .....
-# Formatacao, envio e tratamento de dados
+# Formatação, Envio e Tratamento de Dados
 
 .....
-# Tratamento de conexões simultâneas
+# Tratamento de Conexões Simultâneas
 
 .....
 # Desempenho
 
 .....
-# Confiabilidade da solução
+# Confiabilidade da Solução
+Quanto à confiabilidade da solução, ou seja, à segurança das conexões quando o acesso à Internet de um dos componentes é excluído, observa-se que o sistema continua funcionando. Isso ocorre porque há tratamento para exceções geradas ao tentar enviar dados para a API ou ao consumir, por meio do cliente, assim como ao tentar enviar dados via TCP/IP pelo dispositivo. Além disso, o broker não enfrenta esse tipo de problema, pois pode receber conexões de múltiplos dispositivos e clientes, além de substituir as conexões realizadas pela mesma maquina.
 
-.....
 # Como Executar
 
 ## Etapas:
