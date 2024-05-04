@@ -247,6 +247,8 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 
 # Interface do Cliente
 
+Observe que abaixo seguem algumas Figuras que mostram como a interface CLI se comporta. Vale informar que a entrada está devidamente validada. Observe que a interface do Cliente é o atuador remoto dos Dispositivos e, assim como já mencionado, trabalha em conjunto com o Broker.
+
 <div align="center">
    
    ![Figura 8](Imagens/menucliente.png)
@@ -304,6 +306,8 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
    </div>
 
 # Interface do Dispositivo
+
+Sobre a interface do Dispositivo, podemos verificar como ela se comporta de acordo com as Figuras a seguir. Além disso, assim como a interface do cliente, também está devidamente validada.
 
 <div align="center">
    
