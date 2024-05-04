@@ -57,19 +57,24 @@ def receberUdp(server_udp):
             # Recebe dados do cliente UDP
             data_udp, addr_udp = server_udp.recvfrom(1024)
             print('Conectado por UDP:', addr_udp)
-            print('Mensagem recebida do cliente UDP:', data_udp.decode())
-            if(data_udp.decode() != "Desligar"):
-                if(addr_udp[0] not in dispositivosConectados):
-                    dispositivosConectados.append(addr_udp[0])
-                    enviar_para_api(data_udp, addr_udp[0])
-                else:
-                    atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
-            else:
-                atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
-                #remover_dispositivo(dispositivosConectados.index(addr_udp) + 1)
-                #ispositivosConectados.remove(addr_udp)
+            
+             # Criar uma nova thread para tratar os dados recebidos
+            threading.Thread(target=tratarDados, args=(data_udp, addr_udp)).start()
         except Exception as e:
             print('Item já removido')
+            
+def tratarDados(data_udp, addr_udp):  
+    print('Mensagem recebida do cliente UDP:', data_udp.decode())
+    if(data_udp.decode() != "Desligar"):
+        if(addr_udp[0] not in dispositivosConectados):
+            dispositivosConectados.append(addr_udp[0])
+            enviar_para_api(data_udp, addr_udp[0])
+        else:
+            atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
+    else:
+        atualizar_dado_api(data_udp, dispositivosConectados.index(addr_udp[0]) + 1)
+        #remover_dispositivo(dispositivosConectados.index(addr_udp) + 1)
+        #ispositivosConectados.remove(addr_udp)
             
 ################################################################################################
 #############################    Funções para manipular a API    ###############################
