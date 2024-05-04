@@ -1,6 +1,6 @@
 <div align="center">
 
-# Internet das Coisas - IOT
+# Internet das Coisas - Internet of things (IOT)
 
 </div>
 
@@ -10,14 +10,68 @@ No projeto de Concorrência e Conectividade, criamos uma solução em Python. Ne
 
 # Broker
 
-.....
+Em geral o componente Broker serve de intermediador entre os "Clientes" e os "Dispositivos" e lida tanto com as comunicações TCP/IP e HTTP através da API.
+
+## Arquivo Auxiliar (api.py)
+
+Este arquivo consiste na criação das rotas para que possamos importar e executar a API no arquivo broker.py. Isto foi feito para que o arquivo broker.py não fique poluído. Ademais, vale falar que nele utilizamos rotas POST, GET, PUT e DELETE.
+
+## Arquivo Principal (broker.py)
+
+Agora uma breve explicação sobre cada uma das funções do broker.py.
+
+  - ***main():*** Responsável por criar duas threads, tcp_thread e requisicao_thread, as quais executam as funções tcp_udp_server e requisicao, respectivamente. Entretanto, após isto ele ainda inicia a aplicação Flask.
+
+  - ***tcp_udp_server():***
+
+  - ***receberUdp():***
+
+  - ***pegar_horario_atual_json():***
+
+  - ***enviar_para_api(data_udp, addr):***
+
+  - ***atualizar_dado_api(dado_udp, id):***
+
+  - ***remover_dispositivo(dado_id):***
+
+  - ***remover_requisicao(dado_id):***
+
+  - ***requisicao():***
+
 # Dispositivo
-- ***Gerenciamento do dispositivo:***
+
+O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma lâmpada que pode ser ligada, desligada ou ter seu brilho alterado remotamente.
+
+## Arquivo Principal (dispositivo.py)
+
+- ***main():*** Essa função é responsável por criar os sockets, iniciar uma comunicação TCP com o broker e criar três threads, que são threads das funções receberTcp, enviarDadoUdp e menu, respectivamente.
   
-.....
+- ***menu():*** Essa função tem como propósito mostrar o menu de opções e esperar uma entrada do usuário.
+  
+- ***receberTcp(client):*** Essa função como o nome diz está responsável por aguardar mensagens do Broker e fazer alterações em variáveis quando preciso. Note também que ele recebe um argumento client, o qual guarda a conexão que ele deverá escutar.
+    
+- ***enviarDadoUdp(client_udp):*** Esta função como o nome fala, tem como responsabilidade enviar os dados continuamente para o Broker. Observe que ele possui um argumento client_udp, este guarda uma conexão assim como a função anterior, contudo essa conexão é UDP ao invés de TCP.
+
+- ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
+
+   `Observação:` Vale ressaltar que boa parte dessas funções possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
+
 # Cliente
 
-.....
+O cliente serve para simular uma interface de controle remoto, a qual pode enviar comandos para vários dispositivos com o auxílio do Broker. Observe que essa interface é uma interface de linha de comando (CLI) e não gráfica.
+
+## Arquivo Principal (cliente.py)
+
+- ***main():*** Essa função será responsável pela execução geral do código, incluindo a exibição do menu, a espera de entradas e o encaminhamento de requisições e solicitações para outras funções.
+
+- ***enviarRequisicao(num, comando):*** Esta outra função, como o próprio nome indica, realiza o envio de requisições para a API, utilizando o método POST. Além disso, ela recebe os argumentos num e comando, que representam o identificador (ID) do dispositivo e o comando a ser enviado, respectivamente.
+
+- ***verificaDados():*** Esta função tem como responsabilidade utilizar o método GET para adquirir os dados dos dispositivos, através da API.
+
+- ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
+
+  `Observação:` Vale ressaltar que boa parte dessas funções também possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
+
 # Tecnologias utilizadas
 
 - ***Ferramantas:*** Para o desenvolvimento desta aplicação, utilizamos ferramentas como Insomnia e Visual Studio Code.
@@ -29,13 +83,13 @@ Sobre a arquitetura utilizada para a troca de mensagens podemos citar a conexão
   
 - ***Dispositivo -> Broker:*** A comunicação entre os dispositivos e o broker para o envio de dados foi feita através de sockets, via protocolo TCP/IP. Neste caso, utilizamos o protocolo UDP, pois ao enviarmos dados, a velocidade de envio foi uma prioridade.
 
-    `Observação:` Note que a conexão TCP é inicializada pelo dispositivo, permitindo que o broker envie requisições para os dispositivos conectados sem a necessidade de abrir múltiplas conexões pelo broker, o que demandaria a busca por diversos endereços físicos. No entanto, ele não envia dados utilizando TCP.
+     `Observação:` Note que a conexão TCP é inicializada pelo dispositivo, permitindo que o broker envie requisições para os dispositivos conectados sem a necessidade de abrir múltiplas conexões pelo broker, o que demandaria a busca por diversos endereços físicos. No entanto, ele não envia dados utilizando TCP.
   
 - ***Broker -> Dispositivo:*** A comunicação entre o broker e os dispositivos para o envio de comandos/requisições foi feita, assim como a comunicação do dispositivo com o broker, usando sockets, via protocolo TCP/IP. Porém, ao contrário da comunicação de dados, utilizamos o TCP, a fim de priorizar a segurança do envio de requisições.
    
 - ***Broker <-> Cliente:*** A comunicação entre o broker e o cliente foi realizada por meio de rotas de uma API REST, utilizando verbos como: GET, POST, PUT E DELETE.
 
-     `Definição:` Uma API REST (Representational State Transfer) é uma arquitetura de comunicação que utiliza os princípios do protocolo HTTP para permitir a comunicação entre sistemas distribuídos.
+  `Definição:` Uma API REST (Representational State Transfer) é uma arquitetura de comunicação que utiliza os princípios do protocolo HTTP para permitir a comunicação entre sistemas distribuídos.
 
 Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem, para isso observe a <br/> <em>Figura 1.</em> <br/>
 
@@ -52,15 +106,15 @@ Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evi
 
 - ***Camada de Aplicação:***
  
-   - **Dispositivo:** Sobre o protocolo que o dispositivo utiliza para se comunicar com o broker, devemos abordar que o dispositivo começa criando uma comunicação TCP, o qual envia o "username" e "msg". Isto apenas para armazenar a conexão no broker. A partir desse ponto, ele cria a comunicação UDP e envia os dados continuamente a cada meio segundo para o broker.
+   - **Dispositivo:** Sobre o protocolo que o dispositivo utiliza para se comunicar com o broker, devemos abordar que o dispositivo começa criando uma comunicação TCP. Isto apenas para armazenar a conexão no broker. A partir desse ponto, ele cria a comunicação UDP e envia os dados continuamente a cada meio segundo para o broker.
      
-   - `Observação:` É válido mencionar que os dados enviados via UDP consistem em um dado, seguida pelo endereço IP do dispositivo e a porta que ele utilizou para a comunicação. Além disso, esse dado pode representar o estado de 'Desligado' ou, respectivamente, o brilho atual do dispositivo. Note que para identificar se o dispositivo está ligado basta verificar se o dado é diferente de 'Desligado'.
+       `Observação:` É válido mencionar que os dados enviados via UDP consistem em um dado, seguida pelo endereço IP do dispositivo e a porta que ele utilizou para a comunicação. Além disso, esse dado pode representar o estado de 'Desligado' ou, respectivamente, o brilho atual do dispositivo. Note que para identificar se o dispositivo está ligado basta verificar se o dado é diferente de 'Desligado'.
      
    - **Broker:** Por parte do dispositivo, ele só encaminha mensagens utilizando TCP quando necessário. Para isso, ele verifica se há alguma requisição na API. Se for o caso, ele envia o dado para o respectivo dispositivo através da conexão previamente estabelecida. Esses dados podem ser "Desligar", "Ligar" ou o brilho a ser alterado. Por outro lado, na parte da aplicação, a cada dado que chega, é verificado se o dispositivo já foi armazenado. Se não foi, todos os dados são enviados para a API, incluindo Dado, Id, Endereço e Data. Caso contrário, apenas o Dado é atualizado na API.
 
   - **Cliente:** O cliente envia os dados para a API quando solicitado. Nesse caso, ele fará uma requisição POST em uma determinada rota, que receberá os dados IP, Num e Dado, respectivamente. Além disso, quando for solicitado um dado de um dispositivo, o cliente apenas fará a leitura dos dados através de outra rota existente.
     
-  - `Observação:` Os dados do IP são preenchidos automaticamente pela API. Já o número do dispositivo será escolhido pelo usuário e o Dado pode ser "Desligar", "Ligar" ou um inteiro referente ao valor do brilho a ser alterado.
+     `Observação:` Os dados do IP são preenchidos automaticamente pela API. Já o número do dispositivo será escolhido pelo usuário e o Dado pode ser "Desligar", "Ligar" ou um inteiro referente ao valor do brilho a ser alterado.
      
 - ***Camada de Transporte:***
 
@@ -89,6 +143,8 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 
 ### 1. Configuração do Ambiente:
    - **Requisitos do Sistema:** Será preciso ter ao menos o Docker instalado na máquina para que seja possível criar a imagem e executá-la.
+     
+     `Observação:` Caso queira executar sem o Docker você terá que baixar a versão mais recente do Python e instalar a biblioteca requests e Flask.
 
 ### 2. Obtenção do Código Fonte:
    - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação: https://github.com/Emanuel-Antonio/PBL-Redes.git.
