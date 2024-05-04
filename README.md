@@ -249,57 +249,57 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 
 <div align="center">
    
-   ![Figura 8](Imagens/Seleciona 5.png)
-   <br/> <em>Figura 8. Opção visualizar Dispositivos Conectados.</em> <br/>
+   ![Figura 8](Imagens/menucliente.png)
+   <br/> <em>Figura 8. Menu Cliente.</em> <br/>
    
    </div>
 
   <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 9](Imagens/opcao2cliente.png)
+   <br/> <em>Figura 9. Desligando o Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 10](Imagens/opcao5cliente1.png)
+   <br/> <em>Figura 10. Opção 5 para visualizar os Dispositivos Conectados e suas informações.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 11](Imagens/opcao1cliente.png)
+   <br/> <em>Figura 11. Ligando o Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 12](Imagens/opcao5cliente.png)
+   <br/> <em>Figura 12. Opção 5 para visualizar os Dispositivos Conectados e suas informações.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 13](Imagens/opcao4cliente.png)
+   <br/> <em>Figura 13. Opção 4 para visualizar os dados de um Dispositivo específico.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 14](Imagens/opcao3cliente.png)
+   <br/> <em>Figura 14. Mudando o Brilho de certo Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 15](Imagens/opcao5cliente2.png)
+   <br/> <em>Figura 15. Opção 5 para visualizar os Dispositivos Conectados e suas informações.</em> <br/>
    
    </div>
 
@@ -307,50 +307,43 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 
 <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 16](Imagens/opcao2dispositivo.png)
+   <br/> <em>Figura 16. Desligando o Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 17](Imagens/opcao4dispositivo.png)
+   <br/> <em>Figura 17. Opção 4 para visualizad as informações do Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 18](Imagens/opcao1dispositivo.png)
+   <br/> <em>Figura 18. Ligando o Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 19](Imagens/opcao4dispositivo1.png)
+   <br/> <em>Figura 19. Opção 4 para visualizar as informações do Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 20](Imagens/opcao3dispositivo.png)
+   <br/> <em>Figura 20. Mudando o Brilho do Dispositivo.</em> <br/>
    
    </div>
 
    <div align="center">
    
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
-   
-   </div>
-
-   <div align="center">
-   
-   ![Figura 7](Imagens/Requisicao.png)
-   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   ![Figura 21](Imagens/opcao4dispositivo2.png)
+   <br/> <em>Figura 21. Opção 4 para visualizar as informações do Dispositivo.</em> <br/>
    
    </div>
 
