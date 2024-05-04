@@ -25,12 +25,10 @@ def main():
     print('\nDispositivo Conectado')
 
     thread1 = threading.Thread(target=receberTcp, args=[client])
-    thread2 = threading.Thread(target=enviarMensagem, args=[client, username])
     thread3 = threading.Thread(target=enviarDadoUdp, args=[client_udp])
     thread4 = threading.Thread(target=menu)
 
     thread1.start()
-    thread2.start()
     thread3.start()
     thread4.start()
 
@@ -103,14 +101,6 @@ def receberTcp(client):
                 client.connect((IP, TCP_PORT))
             except Exception as e:
                 pass
-
-def enviarMensagem(client, username):
-    while True:
-        try:
-            msg = "conectado"
-            client.send(f'<{username}> {msg}'.encode())
-        except:
-            return
           
 def enviarDadoUdp(client_udp):
     global BRILHO

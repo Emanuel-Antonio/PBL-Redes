@@ -47,15 +47,8 @@ def tcp_udp_server():
             clients.append(client)
         else:
             clients[enderecos.index(addr[0])] = client
-        thread2 = threading.Thread(target=receberTcp, args=[client])
         thread3 = threading.Thread(target=receberUdp, args=[server_udp])
-        thread2.start()
         thread3.start()
-        
-def receberTcp(client):
-    data_tcp = client.recv(1024)
-    print(clients)
-    print('Mensagem recebida do cliente TCP:', data_tcp.decode())   
               
 def receberUdp(server_udp):
     global dispositivosConectados
