@@ -40,15 +40,15 @@ def tcp_udp_server():
         server.listen()
     except:
         return print(" * Servidor Funcionando")
+    thread3 = threading.Thread(target=receberUdp, args=[server_udp])
+    thread3.start()
     while True:
         client, addr = server.accept()
         if addr[0] not in enderecos:
             enderecos.append(addr[0])
             clients.append(client)
         else:
-            clients[enderecos.index(addr[0])] = client
-        thread3 = threading.Thread(target=receberUdp, args=[server_udp])
-        thread3.start()
+            clients[enderecos.index(addr[0])] = client   
               
 def receberUdp(server_udp):
     global dispositivosConectados
