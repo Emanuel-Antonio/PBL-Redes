@@ -22,21 +22,23 @@ Agora uma breve explicação sobre cada uma das funções do broker.py.
 
   - ***main():*** Responsável por criar duas threads, tcp_thread e requisicao_thread, as quais executam as funções tcp_udp_server e requisicao, respectivamente. Entretanto, após isto ele ainda inicia a aplicação Flask.
 
-  - ***tcp_udp_server():***
+  - ***tcp_udp_server():*** Aqui é feito a criação dos sockets UDP e TCP, além de deixar ele escutando conexões TCP, para guardar tais conexões em um lista de conexões para uso futuro. Ademais, a criação da thread que irá escutar mensagens UDP também é feita nessa função.  
 
-  - ***receberUdp():***
+  - ***receberUdp():*** Está função por sua vez faz somente a recepção dos dados UDP e repassa para ser tratado em uma thread que roda a função tratar dados.
 
-  - ***pegar_horario_atual_json():***
+  - ***tratarDados(data_udp, addr_udp):*** Tal função se compromete a fazer o tratamento adequado do dado UDP recebido. Ele pode utilizar os métodos POST e PUT através de rotas especificas para armazenar esses dados em um arquivo json. 
 
-  - ***enviar_para_api(data_udp, addr):***
+  - ***pegar_horario_atual_json():*** Essa outra função está responsável somente por pegar o horário atual e guardar a hora, minuto e segundo em um dicionário.
 
-  - ***atualizar_dado_api(dado_udp, id):***
+  - ***enviar_para_api(data_udp, addr):*** Função como o nome já diz envia os dados UDP recebidos para a API através de rotas, tais dados formam um dispositivo.
 
-  - ***remover_dispositivo(dado_id):***
+  - ***atualizar_dado_api(dado_udp, id):*** Simplesmente, esta função usa rotas da API para atualizar informações em vez de criar novos dispositivos.
 
-  - ***remover_requisicao(dado_id):***
+  - ***remover_dispositivo(dado_id):*** Como o nome já fala, essa função se responsabiliza por remover dispositivos da API através de rotas.
 
-  - ***requisicao():***
+  - ***remover_requisicao(dado_id):*** Esta outra função se responsabiliza por remover dados da API, contudo, diferente da última função ele remove requisições e não dispositivos.
+
+  - ***requisicao():*** Por fim, essa última função trabalha em thread para que ele possa rebecer constantemente requisições e repassar essas requisições para os respectivos dispositivos.
 
 # Dispositivo
 
@@ -79,6 +81,7 @@ O cliente serve para simular uma interface de controle remoto, a qual pode envia
 - ***Outras:*** Para a produção do código fonte, utilizamos a linguagem de programação Python, além de algumas bibliotecas dessa linguagem, tais como requests, Flask, etc.
   
 # Arquitetura da solução
+
 Sobre a arquitetura utilizada para a troca de mensagens podemos citar a conexão "Dispositivo <-> Broker" e "Broker <-> Cliente". Além disso, utilizamos três componentes, sendo eles: dispositivo, broker e cliente. Note que ambos os componentes possuem uma seção contendo mais detalhes.
   
 - ***Dispositivo -> Broker:*** A comunicação entre os dispositivos e o broker para o envio de dados foi feita através de sockets, via protocolo TCP/IP. Neste caso, utilizamos o protocolo UDP, pois ao enviarmos dados, a velocidade de envio foi uma prioridade.
@@ -95,7 +98,7 @@ Ademais, ainda precisamos falar sobre a ordem que essas comunicações acontecem
 
  <div align="center">
    
-   ![Logo do Meu Projeto](Imagens/Diagrama.png)
+   ![Figura 1](Imagens/Diagrama.png)
    <br/> <em>Figura 1. Camada de Transporte.</em> <br/>
    
    </div>
@@ -124,17 +127,90 @@ Analisando a imagem, mais especificamente na parte "Envio de comandos", fica evi
 
 # Interface da Aplicação (REST)
 
-.....
+Em relação a API foram criadas 8 rotas, as quais utilizaram verbos/métodos como POST, PUT, GET e DELETE.
+
+- ***POST:*** Em relação aos métodos POST, temos duas rotas que à utilizam, sendo que um posta dispositivos em minha aplicação e a outra posta requisições, a rota da primeira do dispositivo é "http://{id do broker}//dispositivos" e a rota da requisição é "http://{id do broker}//requisicoes". Podemos ver a estrutura para construção dessas rotas na Figura 2.
+  
+  <div align="center">
+   
+   ![Figura 2](Imagens/POST.png)
+   <br/> <em>Figura 2. Métodos POST.</em> <br/>
+   
+   </div>
+
+- ***PUT:*** Só há uma rota que utiliza o este método, tal rota se chama "http://{id do broker}//dispositivo/{id do dispositivo}". Vale lembrar que essa método realiza atualizações na minha API. Mais detalhes na Figura 3.
+
+<div align="center">
+   
+   ![Figura 3](Imagens/PUT.png)
+   <br/> <em>Figura 3. Método PUT.</em> <br/>
+   
+   </div>
+
+- ***GET:*** Já em relação aos métodos GET utilizados, temos 3, os quais são dois para dispositivos e um para requisições. As do dispositivo são as rotas "http://{id do broker}//dispositivos/{id do dispositivo}" para acessar os dados de um único dispositivo e "http://{id do broker}//dispositivos" para acessar os dados de todos os dispositivos. A rota de requisições é "http://{id do broker}//requisicoes". Podemos ver mais detalhes na Figura 4.
+
+<div align="center">
+   
+   ![Figura 4](Imagens/GET.png)
+   <br/> <em>Figura 4. Métodos GET.</em> <br/>
+   
+   </div>
+
+- ***DELETE:*** Por fim os métodos DELETE, temos 2, assim como os métodos POST, sendo um para dispositivos e outro para requisições, cujas rotas são "http://{id do broker}//dispositivo/{id do dispositivo}" e "http://{id do broker}//requisicoes/{id da requisição}". Para mais detalhes observe a Figura 5.
+
+<div align="center">
+   
+   ![Fugura 5](Imagens/DELETE.png)
+   <br/> <em>Figura 5. Métodos DELETE.</em> <br/>
+   
+   </div>
+
 # Formatação, Envio e Tratamento de Dados
 
-.....
+A formatação dos dados já foi mencionada como strings específicas enviadas em bytes por partes do dispositivo para o broker e vice-versa. Já o broker envia para o cliente através da API que entende o formato JSON. Em relação ao envio para a API, ele utiliza rotas para fazer POST, DELETE, PUT e GET, e na parte dos sockets, ele usa a função sendto. Vale lembrar que, se não enviarmos no formato correto, haverá erros. Para evitar isso, sempre convertemos em bytes para enviar usando sockets e em JSON para enviar para a API. Na Figura 6, podemos ver sobre o formato do JSON dos dispositivos e na Figura 7, podemos ver o formato do JSON das requisições.
+
+<div align="center">
+   
+   ![Fugura 6](Imagens/Dispositivos.png)
+   <br/> <em>Figura 6. Formato json dos Dispositivos.</em> <br/>
+   
+   </div>
+
+<div align="center">
+   
+   ![Fugura 7](Imagens/Requisicoes.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
 # Tratamento de Conexões Simultâneas
 
-.....
+Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para receber dados, enviar dados e aceitar entrada de dados do terminal, tudo de maneira paralela. Em relação aos problemas de conectividade, não foram identificados, já que esses problemas ocorrem quando há uma extrema quantidade de dispositivos e clientes, e pela quantidade de aparelhos conectados na aplicação não houve esse tipo de problema. Contudo, vale falar sobre os possíveis problemas ao utilizarmos threads, sendo eles: Condições de corrida, Deadlocks, Starvation, Overhead e Dificuldade de depuração.
+
+`Definições:` 
+
+- **Condições de corrida:** Quando várias threads tentam acessar e modificar os mesmos dados ao mesmo tempo, podem ocorrer resultados inconsistentes.
+
+- **Deadlocks:** Ocorre quando duas ou mais threads ficam aguardando indefinidamente por recursos que a outra possui. Isso pode paralisar o sistema.
+
+- **Starvation:** Algumas threads podem ficar impedidas de fazer progresso devido a outras threads monopolizarem recursos necessários.
+
+- **Overhead:** O uso excessivo de threads pode levar a um alto consumo de recursos do sistema, como memória e CPU, devido ao contexto de comutação e à sincronização necessária entre as threads.
+
+- **Dificuldades de depuração:** Problemas de concorrência podem ser difíceis de reproduzir e depurar, especialmente em sistemas complexos com muitas threads em execução simultânea.
+
+`Observção:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria se suma importância relevarmos todos os possivéis problemas.  
+
+# Gerenciamento do Dispositivo
+
+No gerenciamento dos dispositivos, podemos ligá-los, desligá-los e ajustar o brilho, tanto diretamente no arquivo dispositivo.py quanto remotamente no arquivo cliente.py.
+
 # Desempenho
 
-.....
+Sobre o desempenho, exploramos algumas estratégias, como usar threads para receber e enviar dados UDP e TCP. Também usamos threads para lidar com as solicitações HTTP dos clientes. Além disso, na parte das solicitações, destacamos o uso de filas para priorizar aquelas que chegaram primeiro. Essas estratégias ajudam a garantir eficiência e bom desempenho. Essa fila pode ser identificada na função "requisicao()" do arquivo broker.py, já as threads se encontram tanto no arquivo broker.py como no dispositivo.py.
+
 # Confiabilidade da Solução
+
 Quanto à confiabilidade da solução, ou seja, à segurança das conexões quando o acesso à Internet de um dos componentes é excluído, observa-se que o sistema continua funcionando. Isso ocorre porque há tratamento para exceções geradas ao tentar enviar dados para a API ou ao consumir, por meio do cliente, assim como ao tentar enviar dados via TCP/IP pelo dispositivo. Além disso, o broker não enfrenta esse tipo de problema, pois pode receber conexões de múltiplos dispositivos e clientes, além de substituir as conexões realizadas pela mesma maquina.
 
 # Como Executar
@@ -142,26 +218,37 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 ## Etapas:
 
 ### 1. Configuração do Ambiente:
+
    - **Requisitos do Sistema:** Será preciso ter ao menos o Docker instalado na máquina para que seja possível criar a imagem e executá-la.
      
      `Observação:` Caso queira executar sem o Docker você terá que baixar a versão mais recente do Python e instalar a biblioteca requests e Flask.
 
 ### 2. Obtenção do Código Fonte:
+
    - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação: https://github.com/Emanuel-Antonio/PBL-Redes.git.
+     
    - **Download do Código Fonte:** Caso não tenha o Git na máquina, você pode fazer o download desse repositório manualmente. Vá até o canto superior, selecione "Code" e depois "Download ZIP", e então extraia o arquivo ZIP na sua máquina.
 
 ### 3. Configuração da Aplicação:
+
    - **Arquivos de Configuração:** Abra as pastas "Cliente" e "Dispositivo" e altere nos arquivos "cliente.py" e "dispositivo.py" o endereço IP para o endereço da máquina onde o broker esteja rodando.
 
 ### 4. Execução da Aplicação:
+
    - **Sem Docker:**
+     
      1. Basta ir nos arquivos "broker.py", "dispositivo.py" e "cliente.py", dentro das pastas "Broker", "Dispositivo" e "Cliente", respectivamente, e executá-los um por um no seu editor de texto ou terminal. Observe que para isso será necessário que você tenha o Python na máquina e que possua as bibliotecas requests e Flask dessa linguagem.
         
    - **Com Docker:**
+     
      1. Execute o seguinte comando no terminal dentro das pastas Cliente, Dispositivo e Broker: "docker build -t nome_do_arquivo .", para gerar as imagens, repita três vezes.
+        
      2. Agora execute as imagens usando o comando "docker run --network='host' -it nome_da_imagem" para executar as três imagens criadas, vale ressaltar que esse processo deve ser feito três vezes já que são três imagens distintas.
+
+# Como Usar
+
+
 
 # Conclusão
 
-.....
-
+Enfim, destaco que este projeto atende a todas as exigências previamente propostas e desempenha um papel significativo no aprimoramento das habilidades na área de concorrência e conectividade.
