@@ -199,7 +199,7 @@ Sobre o tratamento de múltiplas conexões, utilizamos threads tanto para recebe
 
 - **Dificuldades de depuração:** Problemas de concorrência podem ser difíceis de reproduzir e depurar, especialmente em sistemas complexos com muitas threads em execução simultânea.
 
-`Observção:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria se suma importância relevarmos todos os possivéis problemas.  
+`Observação:` Pelo uso que foi feito dessa aplicação não foi preciso se preocupar com essas questões, contudo para a ampliação de dispositivos e clientes seria de suma importância relevarmos todos os possivéis problemas.  
 
 # Gerenciamento do Dispositivo
 
@@ -245,9 +245,114 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
         
      2. Agora execute as imagens usando o comando "docker run --network='host' -it nome_da_imagem" para executar as três imagens criadas, vale ressaltar que esse processo deve ser feito três vezes já que são três imagens distintas.
 
-# Como Usar
+# Interface do Cliente
 
+<div align="center">
+   
+   ![Figura 8](Imagens/Seleciona 5.png)
+   <br/> <em>Figura 8. Opção visualizar Dispositivos Conectados.</em> <br/>
+   
+   </div>
 
+  <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+# Interface do Dispositivo
+
+<div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
+
+   <div align="center">
+   
+   ![Figura 7](Imagens/Requisicao.png)
+   <br/> <em>Figura 7. Formato json das Requisições.</em> <br/>
+   
+   </div>
 
 # Conclusão
 
