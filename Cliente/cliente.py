@@ -4,12 +4,8 @@ import os
 import json
 
 IP = '192.168.1.105' 
- 
-def main():
-    menu_thread = threading.Thread(target=menu)
-    menu_thread.start()
     
-def menu():
+def main():
     while True:
         try:
             idDispositivos = []
