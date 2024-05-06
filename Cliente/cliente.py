@@ -1,9 +1,8 @@
 import requests
-import threading
 import os
 import json
 
-IP = '192.168.1.105' 
+IP = '172.16.103.8' 
     
 def main():
     while True:
@@ -109,7 +108,7 @@ def limpar_terminal():
 def verificaDados():
     global IP
     url_consume = f'http://{IP}:8088/dispositivos'  # Rota para consumir a API
-
+    consumed_message = {}
     try:
         # Consumir a API para obter a mensagem recém-publicada
         response_consume = requests.get(url_consume, timeout=2)

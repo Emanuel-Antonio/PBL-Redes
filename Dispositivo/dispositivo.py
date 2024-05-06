@@ -1,7 +1,6 @@
 import threading
 import socket
 import time
-import random
 import os
 
 # Configurações do cliente
