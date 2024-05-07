@@ -3,13 +3,16 @@
 # Internet das Coisas - Internet of things (IOT)
 
 </div>
-
+<A name= "Intr"></A>
 # Introdução
 
 No projeto de Concorrência e Conectividade, criamos uma solução em Python. Nela, dispositivos IoT se comunicam com um broker central, que por sua vez facilita a interação com uma interface de controle. Focamos em eficiência e escalabilidade, permitindo múltiplas conexões simultâneas e assegurando uma comunicação fluida e confiável entre dispositivos e a interface do usuário. Essa abordagem não apenas reforça a conectividade na infraestrutura IoT, mas também estabelece uma base sólida para futuras expansões e inovações no campo da Internet das Coisas.
 
 # Sumário
-
+- <A href = "#Intr">Introdução</A><br>
+- <A href = "#Brok">Broker</A><br>
+- <A href = "#Dispositivo">Dispositivo</A><br>
+- <A href = "#Cliente">Cliente</A><br>
 - <A href = "#Arq">Arquitetura da solução</A><br>
 - <A href = "#Apli">Protocolo de comunicação entre dispositivo e Broker - camada de aplicação</A><br>
 - <A href = "#Tran">Protocolo de comunicação entre dispositivo e Broker - camada de transporte</A><br>
@@ -24,6 +27,7 @@ No projeto de Concorrência e Conectividade, criamos uma solução em Python. Ne
 - <A href = "#Disp">Interface do Dispositivo</A><br>
 - <A href = "#Conc">Conclusão</A><br>
 
+<A name= "Brok"></A>
 # Broker
 
 Em geral o componente Broker serve de intermediador entre os "Clientes" e os "Dispositivos" e lida tanto com as comunicações TCP/IP e HTTP através da API.
@@ -55,7 +59,8 @@ Agora uma breve explicação sobre cada uma das funções do broker.py.
   - ***remover_requisicao(dado_id):*** Esta outra função se responsabiliza por remover dados da API, contudo, diferente da última função ele remove requisições e não dispositivos.
 
   - ***requisicao():*** Por fim, essa última função trabalha em thread para que ele possa rebecer constantemente requisições e repassar essas requisições para os respectivos dispositivos.
-
+    
+<A name= "Dispositivo"></A>
 # Dispositivo
 
 O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma lâmpada que pode ser ligada, desligada ou ter seu brilho alterado remotamente.
@@ -73,7 +78,8 @@ O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma l�
 - ***limpar_terminal():*** Esta função tem como responsabilidade limpar o terminal. Para isso, ela verifica o sistema operacional para determinar qual função utilizar. Isto pois para limpar o terminal no "Windows" é diferente de limpar no "Linux".
 
    `Observação:` Vale ressaltar que boa parte dessas funções possuem um bloco try-catch, visto que realizam operações delicadas. Mais detalhes podem ser encontrados na documentação do código.
-
+  
+<A name= "Cliente"></A>
 # Cliente
 
 O cliente serve para simular uma interface de controle remoto, a qual pode enviar comandos para vários dispositivos com o auxílio do Broker. Observe que essa interface é uma interface de linha de comando (CLI) e não gráfica.
