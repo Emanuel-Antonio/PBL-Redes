@@ -3,8 +3,9 @@ import socket
 import time
 import os
 
+IP = os.getenv("IP")
 # Configurações do cliente
-IP = '192.168.1.105'   # Endereço IP do servidor de destino, no caso, broker
+#IP = '192.168.1.105'   # Endereço IP do servidor de destino, no caso, broker
 TCP_PORT = 65432              # Porta TCP do servidor
 UDP_PORT = 65433              # Porta UDP do servidor para resposta
 MENSAGE = 'Ligar'

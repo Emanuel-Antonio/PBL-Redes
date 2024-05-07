@@ -11,5 +11,8 @@ COPY cliente.py .
 #Instale as bibliotecas Python listadas no arquivo requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# variável de ambiente IP
+ENV IP 192.168.1.100
+
 #Comando para iniciar o aplicativo
 CMD ["python", "cliente.py"]

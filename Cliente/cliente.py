@@ -2,7 +2,8 @@ import requests
 import os
 import json
 
-IP = '172.16.103.8' 
+IP = os.getenv("IP")
+#IP = '172.16.103.8' 
     
 def main():
     while True:
