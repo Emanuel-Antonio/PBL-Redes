@@ -225,8 +225,6 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 
    - **Requisitos do Sistema:** Será preciso ter ao menos o Docker instalado na máquina para que seja possível criar a imagem e executá-la.
      
-     `Observação:` Caso queira executar sem o Docker você terá que baixar a versão mais recente do Python e instalar a biblioteca requests e Flask.
-
 ### 2. Obtenção do Código Fonte:
 
    - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação: https://github.com/Emanuel-Antonio/PBL-Redes.git.
@@ -239,10 +237,6 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
 
 ### 4. Execução da Aplicação:
 
-   - **Sem Docker:**
-     
-     1. Basta ir nos arquivos "broker.py", "dispositivo.py" e "cliente.py", dentro das pastas "Broker", "Dispositivo" e "Cliente", respectivamente, e executá-los um por um no seu editor de texto ou terminal. Observe que para isso será necessário que você tenha o Python na máquina e que possua as bibliotecas requests e Flask dessa linguagem.
-        
    - **Com Docker:**
      
      1. Execute o seguinte comando no terminal dentro das pastas Cliente, Dispositivo e Broker: "docker build -t nome_do_arquivo .", para gerar as imagens, repita três vezes.
