@@ -8,6 +8,9 @@
 
 No projeto de Concorrência e Conectividade, criamos uma solução em Python. Nela, dispositivos IoT se comunicam com um broker central, que por sua vez facilita a interação com uma interface de controle. Focamos em eficiência e escalabilidade, permitindo múltiplas conexões simultâneas e assegurando uma comunicação fluida e confiável entre dispositivos e a interface do usuário. Essa abordagem não apenas reforça a conectividade na infraestrutura IoT, mas também estabelece uma base sólida para futuras expansões e inovações no campo da Internet das Coisas.
 
+<A href = "#Categoria">Categoria</A>
+
+
 # Broker
 
 Em geral o componente Broker serve de intermediador entre os "Clientes" e os "Dispositivos" e lida tanto com as comunicações TCP/IP e HTTP através da API.
@@ -41,7 +44,7 @@ Agora uma breve explicação sobre cada uma das funções do broker.py.
   - ***requisicao():*** Por fim, essa última função trabalha em thread para que ele possa rebecer constantemente requisições e repassar essas requisições para os respectivos dispositivos.
 
 # Dispositivo
-
+<A name="Categoria">
 O dispositivo serve para simular um componente IoT. Neste projeto, ele é uma lâmpada que pode ser ligada, desligada ou ter seu brilho alterado remotamente.
 
 ## Arquivo Principal (dispositivo.py)
