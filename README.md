@@ -256,7 +256,9 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
      
 ### 2. Obtenção do Código Fonte:
 
-   - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação: https://github.com/Emanuel-Antonio/PBL-Redes.git.
+   - **Clonagem do Repositório:** Você pode utilizar o seguinte comando no terminal para adquirir a aplicação:                                          
+
+           git clone https://github.com/Emanuel-Antonio/PBL-Redes.git.
      
    - **Download do Código Fonte:** Caso não tenha o Git na máquina, você pode fazer o download desse repositório manualmente. Vá até o canto superior, selecione "Code" e depois "Download ZIP", e então extraia o arquivo ZIP na sua máquina.
 
