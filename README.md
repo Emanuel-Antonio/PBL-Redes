@@ -272,7 +272,7 @@ Quanto à confiabilidade da solução, ou seja, à segurança das conexões quan
      
      1. Execute o seguinte comando no terminal dentro das pastas Cliente, Dispositivo e Broker: "docker build -t nome_do_arquivo .", para gerar as imagens, repita três vezes.
         
-     2. Agora execute as imagens usando o comando "docker run --network='host' -it nome_da_imagem" para executar as três imagens criadas, vale ressaltar que esse processo deve ser feito três vezes já que são três imagens distintas.
+     2. Agora execute as imagens usando o comando "docker run --network='host' -it -e IP=ipBroker nome_da_imagem" para executar as imagens do dispositivo e do cliente, já para executar a imagem do broker use "docker run --network='host' -it nome_da_imagem".
 
 <A name="clie"></A>
 # Interface do Cliente
